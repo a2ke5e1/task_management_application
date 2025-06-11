@@ -1,4 +1,7 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import teamsRouter from "./routes/teams";
+import tasksRouter from "./routes/tasks";
+import projectsRouter from "./routes/projects";
 
 const app = express();
 
@@ -6,8 +9,8 @@ const app = express();
 app.use(express.json());
 
 // Routes
-app.use("/", (req: Request, res: Response) => {
-  res.status(200).json({ Hello: "World!" });
-});
+app.use("/api/teams", teamsRouter);
+app.use("/api/projects", projectsRouter);
+app.use("/api/tasks", tasksRouter);
 
 export default app;
