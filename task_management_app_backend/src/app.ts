@@ -1,6 +1,6 @@
 import express from "express";
 import teamsRouter from "./routes/teams.route";
-import tasksRouter from "./routes/tasks";
+import tasksRouter from "./routes/tasks.route";
 import projectsRouter from "./routes/projects.route";
 
 const app = express();
