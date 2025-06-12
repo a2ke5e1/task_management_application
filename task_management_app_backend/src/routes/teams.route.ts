@@ -23,25 +23,30 @@ teamsRouter.get(
     req: Request<{}, {}, {}, ReadAllTeamInput["query"]>,
     res: Response
   ) => {
-    const { page, limit } = req.query;
-    if (page !== undefined && limit !== undefined) {
-      const skip = (page - 1) * limit;
-      const data = await Teams.find({}).skip(skip).limit(limit);
-      const total = await Teams.countDocuments();
-      const hasMore = limit * page < total;
+    try {
+      const { page, limit } = req.query;
+      if (page !== undefined && limit !== undefined) {
+        const skip = (page - 1) * limit;
+        const data = await Teams.find({}).skip(skip).limit(limit);
+        const total = await Teams.countDocuments();
+        const hasMore = limit * page < total;
 
-      res.json({
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-        totalItems: total,
-        hasMore,
-        data,
-      });
-      return;
+        res.json({
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+          totalItems: total,
+          hasMore,
+          data,
+        });
+        return;
+      }
+      const data = await Teams.find({});
+      res.json({ data });
+    } catch (e: any) {
+      console.warn(e);
+      res.status(500).json({ msg: "Internal server error" });
     }
-    const data = await Teams.find({});
-    res.json({ data });
   }
 );
 
@@ -49,9 +54,14 @@ teamsRouter.get(
   "/:teamId",
   validateResource(getTeamSchema),
   async (req: Request<ReadTeamInput["params"], {}, {}>, res: Response) => {
-    const { teamId } = req.params;
-    const data = await Teams.findOne({ _id: teamId });
-    res.status(200).json({ data });
+    try {
+      const { teamId } = req.params;
+      const data = await Teams.findOne({ _id: teamId });
+      res.status(200).json({ data });
+    } catch (e: any) {
+      console.warn(e);
+      res.status(500).json({ msg: "Internal server error" });
+    }
   }
 );
 
@@ -59,9 +69,14 @@ teamsRouter.post(
   "/",
   validateResource(createTeamSchema),
   async (req: Request<{}, {}, CreateTeamInput["body"]>, res: Response) => {
-    const { name, email, designation } = req.body;
-    const data = await Teams.create({ name, email, designation });
-    res.status(201).json({ msg: "Created Successfully", data });
+    try {
+      const { name, email, designation } = req.body;
+      const data = await Teams.create({ name, email, designation });
+      res.status(201).json({ msg: "Created successfully", data });
+    } catch (e: any) {
+      console.warn(e);
+      res.status(500).json({ msg: "Internal server error" });
+    }
   }
 );
 
@@ -72,14 +87,19 @@ teamsRouter.put(
     req: Request<UpdateTeamInput["params"], {}, UpdateTeamInput["body"]>,
     res: Response
   ) => {
-    const { teamId } = req.params;
-    const { name, email, designation } = req.body;
-    const data = await Teams.findOneAndUpdate(
-      { _id: teamId },
-      { name, email, designation },
-      { new: true }
-    );
-    res.status(200).json({ msg: "Updated Successfully", data });
+    try {
+      const { teamId } = req.params;
+      const { name, email, designation } = req.body;
+      const data = await Teams.findOneAndUpdate(
+        { _id: teamId },
+        { name, email, designation },
+        { new: true }
+      );
+      res.status(200).json({ msg: "Updated successfully", data });
+    } catch (e: any) {
+      console.warn(e);
+      res.status(500).json({ msg: "Internal server error" });
+    }
   }
 );
 
@@ -87,9 +107,14 @@ teamsRouter.delete(
   "/:teamId",
   validateResource(deleteTeamSchema),
   async (req: Request<DeleteTeamInput["params"], {}, {}>, res: Response) => {
-    const { teamId } = req.params;
-    const data = await Teams.findOneAndDelete({ _id: teamId });
-    res.status(204).json({ msg: "Deleted Successfully" });
+    try {
+      const { teamId } = req.params;
+      await Teams.findOneAndDelete({ _id: teamId });
+      res.status(204).json({ msg: "Deleted successfully" });
+    } catch (e: any) {
+      console.warn(e);
+      res.status(500).json({ msg: "Internal server error" });
+    }
   }
 );
 
