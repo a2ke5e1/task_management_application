@@ -27,7 +27,10 @@ projectsRouter.get(
       const { page, limit } = req.query;
       if (page !== undefined && limit !== undefined) {
         const skip = (page - 1) * limit;
-        const data = await Projects.find({}).skip(skip).limit(limit);
+        const data = await Projects.find({})
+          .populate("teamMembers")
+          .skip(skip)
+          .limit(limit);
         const total = await Projects.countDocuments();
         const hasMore = limit * page < total;
 
@@ -41,7 +44,7 @@ projectsRouter.get(
         });
         return;
       }
-      const data = await Projects.find({});
+      const data = await Projects.find({}).populate("teamMembers");
       res.json({ data });
     } catch (e: any) {
       console.warn(e);
@@ -56,7 +59,9 @@ projectsRouter.get(
   async (req: Request<ReadProjectInput["params"], {}, {}>, res: Response) => {
     try {
       const { projectId } = req.params;
-      const data = await Projects.findOne({ _id: projectId });
+      const data = await Projects.findOne({ _id: projectId }).populate(
+        "teamMembers"
+      );
       res.status(200).json({ data });
     } catch (e: any) {
       console.warn(e);

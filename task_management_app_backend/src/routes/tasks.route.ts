@@ -27,7 +27,10 @@ tasksRouter.get(
       const { page, limit } = req.query;
       if (page !== undefined && limit !== undefined) {
         const skip = (page - 1) * limit;
-        const data = await Tasks.find({}).skip(skip).limit(limit);
+        const data = await Tasks.find({})
+          .populate("assignedMembers")
+          .skip(skip)
+          .limit(limit);
         const total = await Tasks.countDocuments();
         const hasMore = limit * page < total;
 
@@ -41,7 +44,7 @@ tasksRouter.get(
         });
         return;
       }
-      const data = await Tasks.find({});
+      const data = await Tasks.find({}).populate("assignedMembers");
       res.json({ data });
     } catch (e: any) {
       console.warn(e);
@@ -56,7 +59,9 @@ tasksRouter.get(
   async (req: Request<ReadTaskInput["params"], {}, {}>, res: Response) => {
     try {
       const { taskId } = req.params;
-      const data = await Tasks.findOne({ _id: taskId });
+      const data = await Tasks.findOne({ _id: taskId }).populate(
+        "assignedMembers"
+      );
       res.status(200).json({ data });
     } catch (e: any) {
       console.warn(e);
