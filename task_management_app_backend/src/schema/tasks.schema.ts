@@ -15,7 +15,7 @@ const payload = {
         required_error: "Deadline is required",
       })
     ),
-    projectId: z.string().refine((id) => isValidObjectId(id), {
+    project: z.string().refine((id) => isValidObjectId(id), {
       message: "Invalid projectId",
     }),
     assignedMembers: z.array(
@@ -69,6 +69,33 @@ export const getAllTaskSchema = z.object({
         .number()
         .min(1, { message: "Limit can't be less than 1" })
         .optional(),
+      projectId: z
+        .string()
+        .refine((id) => isValidObjectId(id), {
+          message: "Invalid projectId",
+        })
+        .optional(),
+      memberId: z
+        .string()
+        .refine((id) => isValidObjectId(id), {
+          message: "Invalid memberId",
+        })
+        .optional(),
+      status: z.enum(["to-do", "in-progress", "done", "cancelled"]).optional(),
+      search: z.string().optional(),
+      startDate: z
+        .string()
+        .optional()
+        .refine((val) => !val || !isNaN(Date.parse(val)), {
+          message: "Invalid startDate",
+        }),
+
+      endDate: z
+        .string()
+        .optional()
+        .refine((val) => !val || !isNaN(Date.parse(val)), {
+          message: "Invalid endDate",
+        }),
     })
     .refine(
       (data) => {
@@ -79,6 +106,16 @@ export const getAllTaskSchema = z.object({
       {
         message: "Both 'page' and 'limit' must be provided together",
         path: ["page"],
+      }
+    )
+    .refine(
+      (data) =>
+        !data.startDate ||
+        !data.endDate ||
+        new Date(data.startDate) <= new Date(data.endDate),
+      {
+        message: "startDate must be before or equal to endDate",
+        path: ["startDate"],
       }
     ),
 });

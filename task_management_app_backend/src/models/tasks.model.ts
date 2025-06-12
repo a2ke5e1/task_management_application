@@ -4,7 +4,7 @@ export interface TasksInput {
   title: string;
   description: string;
   deadline: Date;
-  projectId: string;
+  project: string;
   assignedMembers: string[];
   status: "to-do" | "in-progress" | "done" | "cancelled";
 }
@@ -32,7 +32,7 @@ const taskSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    projectId: {
+    project: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "Projects",
