@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidObjectId } from "mongoose";
 
 const payload = {
   body: z.object({
@@ -18,9 +19,13 @@ const payload = {
 
 const params = {
   params: z.object({
-    teamId: z.string({
-      required_error: "teamId is required",
-    }),
+    teamId: z
+      .string({
+        required_error: "teamId is required",
+      })
+      .refine((id) => isValidObjectId(id), {
+        message: "Invalid teamId",
+      }),
   }),
 };
 
