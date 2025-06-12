@@ -1,5 +1,5 @@
 import express from "express";
-import teamsRouter from "./routes/teams";
+import teamsRouter from "./routes/teams.route";
 import tasksRouter from "./routes/tasks";
 import projectsRouter from "./routes/projects";
 

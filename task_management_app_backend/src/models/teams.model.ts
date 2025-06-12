@@ -1,15 +1,17 @@
 import mongoose from "mongoose";
 
-export interface Teams {
-  _id: mongoose.Schema.Types.ObjectId;
+export interface TeamsInput {
   name: string;
   email: string;
   designation: string;
+}
+
+export interface TeamDocument extends TeamsInput, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
 }
 
-const TeamSchema = new mongoose.Schema<Teams>(
+const teamSchema = new mongoose.Schema(
   {
     _id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -22,6 +24,7 @@ const TeamSchema = new mongoose.Schema<Teams>(
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     designation: {
       type: String,
@@ -31,5 +34,6 @@ const TeamSchema = new mongoose.Schema<Teams>(
   { timestamps: true }
 );
 
-export default mongoose.models.Teams ||
-  mongoose.model<Teams>("Teams", TeamSchema);
+const TeamModel = mongoose.model<TeamDocument>("Teams", teamSchema);
+
+export default TeamModel;
