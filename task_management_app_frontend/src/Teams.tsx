@@ -8,7 +8,7 @@ function Teams() {
     queryKey: ["/teams", page],
     queryFn: async () => {
       const data = await api.get("/teams", {
-        params: { page, limit: 2 },
+        params: { page, limit: 10 },
       });
       return data.data;
     },
@@ -25,10 +25,12 @@ function Teams() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-5xl">Tasks</h1>
-      <div className="font-mono">
+      <h1 className="text-5xl">Teams</h1>
+      <div className="flex flex-col gap-4">
         {status === "pending" ? "Loading..." : ""}
-        {JSON.stringify(teams, null, 2)}
+        {teams?.data.map((team: ITeam) => (
+          <TeamCard key={team._id} {...team} />
+        ))}
       </div>
       <div className="flex flex-row gap-2 items-center">
         <button
@@ -44,6 +46,28 @@ function Teams() {
         >
           next
         </button>
+      </div>
+    </div>
+  );
+}
+
+export interface ITeam {
+  _id: string;
+  name: string;
+  email: string;
+  designation: string;
+}
+
+export function TeamCard({ _id, name, email, designation }: ITeam) {
+  return (
+    <div className="flex flex-col">
+      <div>
+        <div>{name}</div>
+        <div>{email}</div>
+        <div>{designation}</div>
+      </div>
+      <div>
+        <button onClick={() => console.log(_id)}>Delete</button>
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "./api";
 import { useState } from "react";
+import type { IProject } from "./Projects";
+import type { ITeam } from "./Teams";
 
 function Tasks() {
   const [page, setPage] = useState(1);
@@ -8,7 +10,7 @@ function Tasks() {
     queryKey: ["/tasks", page],
     queryFn: async () => {
       const data = await api.get("/tasks", {
-        params: { page, limit: 1 },
+        params: { page, limit: 10 },
       });
       return data.data;
     },
@@ -26,9 +28,11 @@ function Tasks() {
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-5xl">Tasks</h1>
-      <div className="font-mono">
+      <div className="flex flex-col gap-4">
         {status === "pending" ? "Loading..." : ""}
-        {JSON.stringify(tasks, null, 2)}
+        {tasks?.data.map((task: ITask) => (
+          <TaskCard key={task._id} {...task} />
+        ))}
       </div>
       <div className="flex flex-row gap-2 items-center">
         <button
@@ -44,6 +48,40 @@ function Tasks() {
         >
           next
         </button>
+      </div>
+    </div>
+  );
+}
+
+export interface ITask {
+  _id: string;
+  title: string;
+  description: string;
+  deadline: Date;
+  project: IProject;
+  assignedMembers: ITeam[];
+  status: "to-do" | "in-progress" | "done" | "cancelled";
+}
+
+export function TaskCard({
+  title,
+  description,
+  deadline,
+  project,
+  assignedMembers,
+  status,
+}: ITask) {
+  return (
+    <div>
+      <div>{title}</div>
+      <div>{description}</div>
+      <div>{project.name}</div>
+      <div>{new Date(deadline).toString()}</div>
+      <div>{status}</div>
+      <div>
+        {assignedMembers.map((team) => (
+          <div key={team._id}>{team.name}</div>
+        ))}
       </div>
     </div>
   );
