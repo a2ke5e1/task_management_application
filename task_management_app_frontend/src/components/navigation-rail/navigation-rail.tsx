@@ -12,7 +12,7 @@ const navLinkVariants = cva(
   "rounded-3xl flex flex-col justify-center items-center relative w-[3.5rem] h-8 transition-colors",
   {
     variants: {
-      active: {
+      selected: {
         true: "bg-secondary-container text-on-secondary-container",
         false: "text-on-surface-variant",
       },
@@ -22,7 +22,7 @@ const navLinkVariants = cva(
 
 const navTextVariants = cva("text-[0.75rem] leading-4", {
   variants: {
-    active: {
+    selected: {
       true: "text-on-secondary-container font-bold",
       false: "text-on-surface-variant",
     },
@@ -36,7 +36,7 @@ export interface NavLinkProps
   href: string;
   icon: string;
   selectedIcon: string;
-  isSelected: (path: string) => boolean;
+  selected: boolean;
   asChild?: boolean;
 }
 
@@ -47,7 +47,7 @@ const NavLink = React.forwardRef<HTMLDivElement, NavLinkProps>(
       href,
       icon,
       selectedIcon,
-      active,
+      selected,
       asChild = false,
       ...props
     },
@@ -57,7 +57,7 @@ const NavLink = React.forwardRef<HTMLDivElement, NavLinkProps>(
     return (
       <Link to={href} className="flex flex-col items-center">
         <Component
-          className={cn(navLinkVariants({ active }))}
+          className={cn(navLinkVariants({ selected }))}
           ref={ref}
           {...props}
         >
@@ -65,17 +65,17 @@ const NavLink = React.forwardRef<HTMLDivElement, NavLinkProps>(
           <Icon>
             <span
               className={
-                active
+                selected
                   ? "material-symbols-rounded-selected"
                   : "material-symbols-rounded"
               }
             >
-              {active ? selectedIcon : icon}
+              {selected ? selectedIcon : icon}
             </span>
           </Icon>
         </Component>
 
-        <p className={cn(navTextVariants({ active }))}>{title}</p>
+        <p className={cn(navTextVariants({ selected }))}>{title}</p>
       </Link>
     );
   },
@@ -104,24 +104,21 @@ export const NavigationRail = () => {
           name="Tasks"
           icon="task_alt"
           selectedIcon="task_alt"
-          isSelected={isSelected}
-          active={isSelected("/tasks")}
+          selected={isSelected("/tasks")}
         />
         <NavLink
           href="/projects"
           name="Projects"
           icon="explore"
           selectedIcon="explore"
-          isSelected={isSelected}
-          active={isSelected("/projects")}
+          selected={isSelected("/projects")}
         />
         <NavLink
           href="/teams"
           name="Teams"
           icon="groups"
           selectedIcon="groups"
-          isSelected={isSelected}
-          active={isSelected("/teams")}
+          selected={isSelected("/teams")}
         />
       </div>
       <div className="mx-auto my-2 flex h-fit w-fit flex-col gap-4">
@@ -151,24 +148,21 @@ export const BottomNavigation = () => {
           name="Tasks"
           icon="task_alt"
           selectedIcon="task_alt"
-          isSelected={isSelected}
-          active={isSelected("/tasks")}
+          selected={isSelected("/tasks")}
         />
         <NavLink
           href="/projects"
           name="Projects"
           icon="explore"
           selectedIcon="explore"
-          isSelected={isSelected}
-          active={isSelected("/projects")}
+          selected={isSelected("/projects")}
         />
         <NavLink
           href="/teams"
           name="Teams"
           icon="deployed_code"
           selectedIcon="deployed_code"
-          isSelected={isSelected}
-          active={isSelected("/teams")}
+          selected={isSelected("/teams")}
         />
       </div>
     </div>

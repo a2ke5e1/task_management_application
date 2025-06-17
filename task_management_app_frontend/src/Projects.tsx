@@ -33,16 +33,16 @@ function Projects() {
           <ProjectCard key={project._id} {...project} />
         ))}
       </div>
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-row items-center gap-2">
         <button
-          className="bg-blue-200 p-4 rounded-full"
+          className="rounded-full bg-blue-200 p-4"
           onClick={handlePrevButton}
         >
           prev
         </button>
         {page}/{projects?.totalPages}
         <button
-          className="bg-blue-200 p-4 rounded-full"
+          className="rounded-full bg-blue-200 p-4"
           onClick={handleNextButton}
         >
           next
@@ -66,7 +66,7 @@ export function ProjectCard({ name, description, teamMembers }: IProject) {
       <div>{description}</div>
       <div>
         {teamMembers.map((team) => (
-          <div>{team.name}</div>
+          <div key={team._id}>{team.name}</div>
         ))}
       </div>
     </div>
