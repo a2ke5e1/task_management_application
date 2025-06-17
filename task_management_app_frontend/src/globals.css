@@ -1,0 +1,168 @@
+@import "material-symbols" layer(base);
+
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "./reset.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+@custom-variant dark (&:is(.dark *));
+
+@config '../tailwind.config.ts';
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@layer base {
+  :root {
+    --md-ref-typeface-brand: "Roboto";
+    --md-ref-typeface-plain: "Roboto";
+
+    --md-sys-color-primary: rgb(0 105 109);
+    --md-sys-color-surface-tint: rgb(0 105 109);
+    --md-sys-color-on-primary: rgb(255 255 255);
+    --md-sys-color-primary-container: rgb(156 240 245);
+    --md-sys-color-on-primary-container: rgb(0 32 33);
+    --md-sys-color-secondary: rgb(74 99 100);
+    --md-sys-color-on-secondary: rgb(255 255 255);
+    --md-sys-color-secondary-container: rgb(204 232 233);
+    --md-sys-color-on-secondary-container: rgb(4 31 33);
+    --md-sys-color-tertiary: rgb(78 95 125);
+    --md-sys-color-on-tertiary: rgb(255 255 255);
+    --md-sys-color-tertiary-container: rgb(213 227 255);
+    --md-sys-color-on-tertiary-container: rgb(8 28 54);
+    --md-sys-color-error: rgb(186 26 26);
+    --md-sys-color-on-error: rgb(255 255 255);
+    --md-sys-color-error-container: rgb(255 218 214);
+    --md-sys-color-on-error-container: rgb(65 0 2);
+    --md-sys-color-background: rgb(244 251 250);
+    --md-sys-color-on-background: rgb(22 29 29);
+    --md-sys-color-surface: rgb(244 251 250);
+    --md-sys-color-on-surface: rgb(22 29 29);
+    --md-sys-color-surface-variant: rgb(218 228 229);
+    --md-sys-color-on-surface-variant: rgb(63 73 73);
+    --md-sys-color-outline: rgb(111 121 121);
+    --md-sys-color-outline-variant: rgb(190 200 201);
+    --md-sys-color-shadow: rgb(0 0 0);
+    --md-sys-color-scrim: rgb(0 0 0);
+    --md-sys-color-inverse-surface: rgb(43 50 50);
+    --md-sys-color-inverse-on-surface: rgb(236 242 242);
+    --md-sys-color-inverse-primary: rgb(128 212 217);
+    --md-sys-color-primary-fixed: rgb(156 240 245);
+    --md-sys-color-on-primary-fixed: rgb(0 32 33);
+    --md-sys-color-primary-fixed-dim: rgb(128 212 217);
+    --md-sys-color-on-primary-fixed-variant: rgb(0 79 83);
+    --md-sys-color-secondary-fixed: rgb(204 232 233);
+    --md-sys-color-on-secondary-fixed: rgb(4 31 33);
+    --md-sys-color-secondary-fixed-dim: rgb(177 204 205);
+    --md-sys-color-on-secondary-fixed-variant: rgb(50 75 76);
+    --md-sys-color-tertiary-fixed: rgb(213 227 255);
+    --md-sys-color-on-tertiary-fixed: rgb(8 28 54);
+    --md-sys-color-tertiary-fixed-dim: rgb(181 199 233);
+    --md-sys-color-on-tertiary-fixed-variant: rgb(54 71 100);
+    --md-sys-color-surface-dim: rgb(213 219 219);
+    --md-sys-color-surface-bright: rgb(244 251 250);
+    --md-sys-color-surface-container-lowest: rgb(255 255 255);
+    --md-sys-color-surface-container-low: rgb(239 245 245);
+    --md-sys-color-surface-container: rgb(233 239 239);
+    --md-sys-color-surface-container-high: rgb(227 233 233);
+    --md-sys-color-surface-container-highest: rgb(221 228 228);
+  }
+
+  .dark {
+    --md-sys-color-primary: rgb(128 212 217);
+    --md-sys-color-surface-tint: rgb(128 212 217);
+    --md-sys-color-on-primary: rgb(0 55 57);
+    --md-sys-color-primary-container: rgb(0 79 83);
+    --md-sys-color-on-primary-container: rgb(156 240 245);
+    --md-sys-color-secondary: rgb(177 204 205);
+    --md-sys-color-on-secondary: rgb(27 52 54);
+    --md-sys-color-secondary-container: rgb(50 75 76);
+    --md-sys-color-on-secondary-container: rgb(204 232 233);
+    --md-sys-color-tertiary: rgb(181 199 233);
+    --md-sys-color-on-tertiary: rgb(31 49 76);
+    --md-sys-color-tertiary-container: rgb(54 71 100);
+    --md-sys-color-on-tertiary-container: rgb(213 227 255);
+    --md-sys-color-error: rgb(255 180 171);
+    --md-sys-color-on-error: rgb(105 0 5);
+    --md-sys-color-error-container: rgb(147 0 10);
+    --md-sys-color-on-error-container: rgb(255 218 214);
+    --md-sys-color-background: rgb(14 20 21);
+    --md-sys-color-on-background: rgb(221 228 228);
+    --md-sys-color-surface: rgb(14 20 21);
+    --md-sys-color-on-surface: rgb(221 228 228);
+    --md-sys-color-surface-variant: rgb(63 73 73);
+    --md-sys-color-on-surface-variant: rgb(190 200 201);
+    --md-sys-color-outline: rgb(137 147 147);
+    --md-sys-color-outline-variant: rgb(63 73 73);
+    --md-sys-color-shadow: rgb(0 0 0);
+    --md-sys-color-scrim: rgb(0 0 0);
+    --md-sys-color-inverse-surface: rgb(221 228 228);
+    --md-sys-color-inverse-on-surface: rgb(43 50 50);
+    --md-sys-color-inverse-primary: rgb(0 105 109);
+    --md-sys-color-primary-fixed: rgb(156 240 245);
+    --md-sys-color-on-primary-fixed: rgb(0 32 33);
+    --md-sys-color-primary-fixed-dim: rgb(128 212 217);
+    --md-sys-color-on-primary-fixed-variant: rgb(0 79 83);
+    --md-sys-color-secondary-fixed: rgb(204 232 233);
+    --md-sys-color-on-secondary-fixed: rgb(4 31 33);
+    --md-sys-color-secondary-fixed-dim: rgb(177 204 205);
+    --md-sys-color-on-secondary-fixed-variant: rgb(50 75 76);
+    --md-sys-color-tertiary-fixed: rgb(213 227 255);
+    --md-sys-color-on-tertiary-fixed: rgb(8 28 54);
+    --md-sys-color-tertiary-fixed-dim: rgb(181 199 233);
+    --md-sys-color-on-tertiary-fixed-variant: rgb(54 71 100);
+    --md-sys-color-surface-dim: rgb(14 20 21);
+    --md-sys-color-surface-bright: rgb(52 58 59);
+    --md-sys-color-surface-container-lowest: rgb(9 15 16);
+    --md-sys-color-surface-container-low: rgb(22 29 29);
+    --md-sys-color-surface-container: rgb(26 33 33);
+    --md-sys-color-surface-container-high: rgb(37 43 43);
+    --md-sys-color-surface-container-highest: rgb(48 54 54);
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: "Roboto", sans-serif;
+    @apply bg-surface text-on-surface;
+  }
+
+  .material-symbols-rounded-selected {
+    font-variation-settings:
+      "FILL" 1,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+  }
+
+  .material-symbols-rounded {
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-variant;
+    border-radius: 50px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary;
+    border-radius: 50px;
+  }
+  ::marker {
+    @apply text-primary;
+  }
+}

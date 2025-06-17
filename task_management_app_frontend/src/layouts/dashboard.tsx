@@ -1,16 +1,24 @@
-import { Link } from "react-router";
 import { Outlet } from "react-router";
+import {
+  BottomNavigation,
+  NavigationRail,
+} from "../components/navigation-rail/navigation-rail";
 
 const DashboardLayout = () => {
   return (
-    <div className="flex flex-row gap-4">
-      <div className="flex flex-col gap-4 items-start">
-        <Link to="/tasks">Tasks</Link>
-        <Link to="/projects">Projects</Link>
-        <Link to="/teams">Teams</Link>
+    <>
+      <div className="flex flex-row">
+        <div className="hidden sm:block">
+          <NavigationRail />
+        </div>
+        <div className="bg-surface-container-lowest text-on-surface mt-4 mr-4 mb-20 ml-4 w-full rounded-2xl p-4 sm:mb-4 sm:ml-[4.5rem]">
+          <Outlet />
+        </div>
       </div>
-      <Outlet />
-    </div>
+      <div className="block sm:hidden">
+        <BottomNavigation />
+      </div>
+    </>
   );
 };
 
