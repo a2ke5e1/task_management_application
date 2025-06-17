@@ -83,9 +83,10 @@ function Teams() {
     designation: "",
   };
 
-  const handleSubmit = (values: typeof initialValues) => {
+  const handleSubmit = (values: typeof initialValues, { resetForm }: any) => {
     console.log("Form submitted:", values);
     createTeamMutation.mutate(values);
+    resetForm();
   };
 
   const openDialog = () => {

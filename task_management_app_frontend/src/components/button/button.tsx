@@ -66,19 +66,15 @@ export const OutlinedIconButton = createComponent({
 });
 
 export const ThemeToggleButton = () => {
-  const [theme, setTheme] = useState("light");
-
-  useEffect(() => {
+  const [theme, setTheme] = useState(() => {
     const userTheme = localStorage.getItem("theme");
     const systemPrefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)",
     ).matches;
-    if (userTheme) {
-      setTheme(userTheme);
-    } else if (systemPrefersDark) {
-      setTheme("dark");
-    }
-  }, []);
+
+    if (userTheme) return userTheme;
+    return systemPrefersDark ? "dark" : "light";
+  });
 
   useEffect(() => {
     if (theme === "dark") {
@@ -90,16 +86,14 @@ export const ThemeToggleButton = () => {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
-
-  const active = theme === "light";
 
   return (
     <IconButton onClick={toggleTheme}>
       <Icon>
-        <span className={"material-symbols-rounded"}>
-          {active ? "dark_mode" : "light_mode"}
+        <span className="material-symbols-rounded">
+          {theme === "light" ? "dark_mode" : "light_mode"}
         </span>
       </Icon>
     </IconButton>
