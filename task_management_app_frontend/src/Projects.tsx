@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "./api";
 import { useState } from "react";
-import type { ITeam } from "./Teams";
+import type { ITeam } from "./pages/Teams";
 
 function Projects() {
   const [page, setPage] = useState(1);

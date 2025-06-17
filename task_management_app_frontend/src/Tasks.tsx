@@ -2,7 +2,7 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "./api";
 import { useState } from "react";
 import type { IProject } from "./Projects";
-import type { ITeam } from "./Teams";
+import type { ITeam } from "./pages/Teams";
 
 function Tasks() {
   const [page, setPage] = useState(1);
@@ -34,16 +34,16 @@ function Tasks() {
           <TaskCard key={task._id} {...task} />
         ))}
       </div>
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-row items-center gap-2">
         <button
-          className="bg-blue-200 p-4 rounded-full"
+          className="rounded-full bg-blue-200 p-4"
           onClick={handlePrevButton}
         >
           prev
         </button>
         {page}/{tasks?.totalPages}
         <button
-          className="bg-blue-200 p-4 rounded-full"
+          className="rounded-full bg-blue-200 p-4"
           onClick={handleNextButton}
         >
           next
