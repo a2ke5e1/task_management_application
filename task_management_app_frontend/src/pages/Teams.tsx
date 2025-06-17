@@ -1,4 +1,9 @@
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import {
+  useQuery,
+  keepPreviousData,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import api from "../api";
 import { useState, Fragment, useRef } from "react";
 import { IconButton } from "../components/button/button";
@@ -36,6 +41,7 @@ const validationSchema = Yup.object({
 });
 
 function Teams() {
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const { status, data: teams } = useQuery({
     queryKey: ["/teams", page],
@@ -47,6 +53,20 @@ function Teams() {
     },
     placeholderData: keepPreviousData,
     staleTime: 5000,
+  });
+
+  const createTeamMutation = useMutation({
+    mutationFn: async (newTeam: typeof initialValues) => {
+      const response = await api.post("/teams", newTeam);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/teams"] });
+      closeDialog();
+    },
+    onError: (error: any) => {
+      console.error("Failed to create team", error);
+    },
   });
 
   const handlePrevButton = () => {
@@ -65,7 +85,7 @@ function Teams() {
 
   const handleSubmit = (values: typeof initialValues) => {
     console.log("Form submitted:", values);
-    dialogRef.current?.close();
+    createTeamMutation.mutate(values);
   };
 
   const openDialog = () => {
