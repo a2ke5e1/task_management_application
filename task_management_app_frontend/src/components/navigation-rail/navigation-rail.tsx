@@ -98,7 +98,7 @@ export const NavigationRail = () => {
   return (
     <div className="bg-surface text-on-surface fixed top-0 left-0 flex h-screen w-[4.5rem] flex-col justify-between">
       <div></div>
-      <div className="mx-auto my-2 flex h-fit w-fit flex-col gap-4">
+      <div className="mx-auto my-2 flex h-fit w-fit flex-col gap-6">
         <NavLink
           href="/tasks"
           name="Tasks"
@@ -142,7 +142,7 @@ export const BottomNavigation = () => {
 
   return (
     <div className="bg-surface text-on-surface fixed bottom-0 flex w-screen flex-row justify-center">
-      <div className="mx-auto my-2 flex h-fit w-fit flex-row gap-4">
+      <div className="mx-auto my-2 flex h-fit w-full flex-row justify-around">
         <NavLink
           href="/tasks"
           name="Tasks"
