@@ -11,7 +11,7 @@ const DashboardLayout = () => {
         <div className="hidden sm:block">
           <NavigationRail />
         </div>
-        <div className="bg-surface-container-lowest text-on-surface mt-4 mr-4 mb-20 ml-4 w-full rounded-2xl p-4 sm:mb-4 sm:ml-[4.5rem]">
+        <div className="bg-surface-container-lowest text-on-surface mt-4 mr-4 mb-20 ml-4 h-[calc(100vh-6rem)] w-full overflow-auto rounded-2xl p-4 sm:mb-4 sm:ml-[4.5rem] sm:h-[calc(100vh-2rem)]">
           <Outlet />
         </div>
       </div>
