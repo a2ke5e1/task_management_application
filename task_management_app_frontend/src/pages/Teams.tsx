@@ -8,45 +8,19 @@ import api from "../api";
 import { useState, Fragment, useRef } from "react";
 import { IconButton } from "../components/button/button";
 import { Icon } from "../components/icon/icon";
-import { List, ListItem } from "../components/lists/list";
+import { List } from "../components/lists/list";
 import { Divider } from "../components/divider/divider";
 import { Fab } from "../components/fab/fab";
 import { Dialog } from "../components/dialog/dialog";
 import { TextButton } from "../components/button/button";
-import { OutlinedTextField } from "../components/textfield/textfield";
 import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
+import {
+  createTeamValidationSchema,
+  updateTeamValidationSchema,
+} from "../schemas/teams";
 import { MdDialog } from "@material/web/dialog/dialog";
-import { useField } from "formik";
-import { Checkbox } from "../components/checkbox/checkbox";
-
-const FormikOutlinedTextField = ({ label, ...props }: any) => {
-  const [field, meta] = useField(props);
-  return (
-    <div className="flex flex-col gap-1">
-      <OutlinedTextField
-        label={label}
-        {...field}
-        error={meta.touched && meta.error}
-        errorText={meta.touched && meta.error ? meta.error : null}
-        {...props}
-      />
-    </div>
-  );
-};
-
-const createTeamValidationSchema = Yup.object({
-  name: Yup.string().required("Name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  designation: Yup.string().required("Designation is required"),
-});
-
-const updateTeamValidationSchema = Yup.object({
-  _id: Yup.string().required("Team ID is required"),
-  name: Yup.string().required("Name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  designation: Yup.string().required("Designation is required"),
-});
+import { TeamCard, type ITeam } from "../components/teams/team-card";
+import { FormikOutlinedTextField } from "../components/textfield/textfield";
 
 function Teams() {
   const queryClient = useQueryClient();
@@ -142,7 +116,9 @@ function Teams() {
   };
 
   const openUpdateDialog = () => {
-    updateTeamDialogRef.current?.show();
+    if (selectedTeam) {
+      updateTeamDialogRef.current?.show();
+    }
   };
 
   const closeUpdateDialog = () => {
@@ -320,36 +296,6 @@ function Teams() {
         </IconButton>
       </div>
     </div>
-  );
-}
-
-export interface ITeam {
-  _id: string;
-  name: string;
-  email: string;
-  designation: string;
-}
-
-export function TeamCard({
-  _id,
-  name,
-  email,
-  designation,
-  selected,
-  onSelect,
-}: ITeam & { selected: boolean; onSelect: () => void }) {
-  return (
-    <ListItem key={_id}>
-      <Checkbox
-        slot="start"
-        checked={selected}
-        onChange={onSelect}
-        name={`team-${_id}`}
-      ></Checkbox>
-      <div slot="headline">{name}</div>
-      <div slot="supporting-text">{designation}</div>
-      <div slot="trailing-supporting-text">{email}</div>
-    </ListItem>
   );
 }
 
