@@ -1,13 +1,13 @@
 import { useNavigate, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import api from "./api";
-import type { ITeam } from "./components/teams/team-card";
-import type { IProject } from "./layouts/project";
-import { IconButton, TextButton } from "./components/button/button";
-import { Icon } from "./components/icon/icon";
+import api from "../api";
+import type { ITeam } from "../components/teams/team-card";
+import type { IProject } from "../layouts/project-layout";
+import { IconButton, TextButton } from "../components/button/button";
+import { Icon } from "../components/icon/icon";
 import type { MdDialog } from "@material/web/dialog/dialog";
 import { useRef } from "react";
-import { Dialog } from "./components/dialog/dialog";
+import { Dialog } from "../components/dialog/dialog";
 import { Field, Form, Formik, type FormikHelpers } from "formik";
 
 function Projects() {

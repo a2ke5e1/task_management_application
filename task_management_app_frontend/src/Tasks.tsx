@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "./api";
 import { useState } from "react";
-import type { IProject } from "./layouts/project";
+import type { IProject } from "./layouts/project-layout";
 import type { ITeam } from "./components/teams/team-card";
 
 function Tasks() {

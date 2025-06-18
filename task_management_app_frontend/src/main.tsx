@@ -3,11 +3,11 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import DashboardLayout from "./layouts/dashboard";
+import DashboardLayout from "./layouts/dashboard-layout";
 import Tasks from "./Tasks";
 import Teams from "./pages/Teams";
-import ProjectsLayout from "./layouts/project";
-import Project from "./Projects";
+import ProjectsLayout from "./layouts/project-layout";
+import Project from "./pages/Projects";
 import CreateProjects from "./pages/CreateProjects";
 
 const queryClient = new QueryClient();
