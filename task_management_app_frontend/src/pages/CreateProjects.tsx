@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik";
 import { createProjectValidationSchema } from "../schemas/projects";
 import { FormikOutlinedTextField } from "../components/textfield/textfield";
-import { TextButton } from "../components/button/button";
+import { FilledButton, TextButton } from "../components/button/button";
 import api from "../api";
 import { useQuery } from "@tanstack/react-query";
 import { type ITeam } from "../components/teams/team-card";
@@ -42,8 +42,8 @@ export default function CreateProjects() {
   });
 
   return (
-    <div>
-      <h1 className="text-5xl">Create Project</h1>
+    <div className="flex flex-col gap-4 p-4">
+      <h1 className="text-display-large">Create Project</h1>
       <Formik
         initialValues={initialValues}
         validationSchema={createProjectValidationSchema}
@@ -51,7 +51,7 @@ export default function CreateProjects() {
       >
         {({ handleSubmit, errors }) => (
           <>
-            <Form slot="content" className="flex flex-col gap-4">
+            <Form className="flex max-w-lg flex-col gap-4">
               <FormikOutlinedTextField
                 label="Name"
                 name="name"
@@ -61,6 +61,8 @@ export default function CreateProjects() {
               <FormikOutlinedTextField
                 label="Description"
                 name="description"
+                type="textarea"
+                rows={4}
                 required
               />
               <div className="text-label-large">Choose team members</div>
@@ -87,14 +89,14 @@ export default function CreateProjects() {
               {errors.teamMembers && (
                 <div className="text-red-500">{errors.teamMembers}</div>
               )}
-            </Form>
 
-            <div slot="actions" className="mt-4 flex justify-end gap-2">
-              <TextButton value="cancel">Cancel</TextButton>
-              <TextButton onClick={() => handleSubmit()} value="ok">
-                Ok
-              </TextButton>
-            </div>
+              <div className="mt-4 flex justify-start gap-4">
+                <TextButton type="reset" value="cancel">
+                  Cancel
+                </TextButton>
+                <FilledButton type="submit">Create</FilledButton>
+              </div>
+            </Form>
           </>
         )}
       </Formik>

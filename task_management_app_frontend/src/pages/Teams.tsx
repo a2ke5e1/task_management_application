@@ -172,16 +172,20 @@ function Teams() {
                   name="designation"
                   required
                 />
-              </Form>
 
-              <div slot="actions" className="mt-4 flex justify-end gap-2">
-                <TextButton onClick={closeCreateDialog} value="cancel">
-                  Cancel
-                </TextButton>
-                <TextButton onClick={() => handleSubmit()} value="ok">
-                  Ok
-                </TextButton>
-              </div>
+                <div slot="actions" className="mt-4 flex justify-end gap-2">
+                  <TextButton
+                    type="reset"
+                    onClick={closeCreateDialog}
+                    value="cancel"
+                  >
+                    Cancel
+                  </TextButton>
+                  <TextButton type="submit" value="ok">
+                    Add
+                  </TextButton>
+                </div>
+              </Form>
             </>
           )}
         </Formik>
@@ -213,16 +217,20 @@ function Teams() {
                   name="designation"
                   required
                 />
-              </Form>
 
-              <div slot="actions" className="mt-4 flex justify-end gap-2">
-                <TextButton onClick={closeUpdateDialog} value="cancel">
-                  Cancel
-                </TextButton>
-                <TextButton onClick={() => handleSubmit()} value="ok">
-                  Ok
-                </TextButton>
-              </div>
+                <div slot="actions" className="mt-4 flex justify-end gap-2">
+                  <TextButton
+                    type="reset"
+                    onClick={closeCreateDialog}
+                    value="cancel"
+                  >
+                    Cancel
+                  </TextButton>
+                  <TextButton type="submit" value="ok">
+                    Update
+                  </TextButton>
+                </div>
+              </Form>
             </>
           )}
         </Formik>
