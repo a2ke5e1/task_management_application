@@ -157,7 +157,7 @@ function Teams() {
           validationSchema={createTeamValidationSchema}
           onSubmit={handleSubmit}
         >
-          {({ handleSubmit }) => (
+          {({ isSubmitting }) => (
             <>
               <Form slot="content" className="flex flex-col gap-4">
                 <FormikOutlinedTextField
@@ -181,7 +181,7 @@ function Teams() {
                   >
                     Cancel
                   </TextButton>
-                  <TextButton type="submit" value="ok">
+                  <TextButton type="submit" value="ok" disabled={isSubmitting}>
                     Add
                   </TextButton>
                 </div>
@@ -201,7 +201,7 @@ function Teams() {
           validationSchema={updateTeamValidationSchema}
           onSubmit={handleUpdateSubmit}
         >
-          {({ handleSubmit }) => (
+          {({ isSubmitting }) => (
             <>
               <Form slot="content" className="flex flex-col gap-4">
                 <Field name="_id" type="hidden" />
@@ -226,7 +226,7 @@ function Teams() {
                   >
                     Cancel
                   </TextButton>
-                  <TextButton type="submit" value="ok">
+                  <TextButton type="submit" value="ok" disabled={isSubmitting}>
                     Update
                   </TextButton>
                 </div>

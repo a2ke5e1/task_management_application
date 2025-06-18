@@ -1,8 +1,8 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "./api";
 import { useState } from "react";
-import type { IProject } from "./Projects";
-import type { ITeam } from "./pages/Teams";
+import type { IProject } from "./layouts/project";
+import type { ITeam } from "./components/teams/team-card";
 
 function Tasks() {
   const [page, setPage] = useState(1);
@@ -75,7 +75,7 @@ export function TaskCard({
     <div>
       <div>{title}</div>
       <div>{description}</div>
-      <div>{project.name}</div>
+      <div>{project?.name}</div>
       <div>{new Date(deadline).toString()}</div>
       <div>{status}</div>
       <div>

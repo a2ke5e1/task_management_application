@@ -12,7 +12,7 @@ const ProjectsLayout = () => {
   const [page, setPage] = useState(1);
 
   const { status, data: projects } = useQuery({
-    queryKey: ["/projects", page],
+    queryKey: ["projects", page],
     queryFn: async () => {
       const data = await api.get("/projects", {
         params: { page, limit: 10 },
@@ -68,8 +68,7 @@ const ProjectsLayout = () => {
             </IconButton>
           </div>
         </div>
-
-        <div className="">
+        <div className="flex flex-1 flex-col gap-4">
           <Outlet />
         </div>
       </div>

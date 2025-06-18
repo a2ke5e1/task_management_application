@@ -49,7 +49,7 @@ export default function CreateProjects() {
         validationSchema={createProjectValidationSchema}
         onSubmit={handleSubmit}
       >
-        {({ handleSubmit, errors }) => (
+        {({ isSubmitting, errors }) => (
           <>
             <Form className="flex max-w-lg flex-col gap-4">
               <FormikOutlinedTextField
@@ -94,7 +94,9 @@ export default function CreateProjects() {
                 <TextButton type="reset" value="cancel">
                   Cancel
                 </TextButton>
-                <FilledButton type="submit">Create</FilledButton>
+                <FilledButton type="submit" disabled={isSubmitting}>
+                  Create
+                </FilledButton>
               </div>
             </Form>
           </>
