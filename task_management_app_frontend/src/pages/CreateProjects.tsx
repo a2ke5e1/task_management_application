@@ -1,12 +1,15 @@
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { createProjectValidationSchema } from "../schemas/projects";
 import { FormikOutlinedTextField } from "../components/textfield/textfield";
 import { TextButton } from "../components/button/button";
-import { CustomSelect } from "../components/select/select";
 import api from "../api";
 import { useQuery } from "@tanstack/react-query";
-import type { ITeam } from "../components/teams/team-card";
+import { type ITeam } from "../components/teams/team-card";
 import { useNavigate } from "react-router";
+import { Fragment } from "react/jsx-runtime";
+import { Divider } from "../components/divider/divider";
+import { List, ListItem } from "../components/lists/list";
+import { FormikCheckbox } from "../components/checkbox/checkbox";
 
 const initialValues = {
   name: "",
@@ -46,7 +49,7 @@ export default function CreateProjects() {
         validationSchema={createProjectValidationSchema}
         onSubmit={handleSubmit}
       >
-        {({ handleSubmit }) => (
+        {({ handleSubmit, errors }) => (
           <>
             <Form slot="content" className="flex flex-col gap-4">
               <FormikOutlinedTextField
@@ -60,17 +63,30 @@ export default function CreateProjects() {
                 name="description"
                 required
               />
-              <Field
-                className="custom-select"
-                name="teamMembers"
-                options={teams?.data.map((team: ITeam) => ({
-                  label: team.name,
-                  value: team._id,
-                }))}
-                component={CustomSelect}
-                placeholder="Select multi teams..."
-                isMulti={true}
-              />
+              <div className="text-label-large">Choose team members</div>
+              {teams?.data.length > 0 && (
+                <List className="rounded-3xl">
+                  {teams?.data.map((team: ITeam, index: number) => (
+                    <Fragment key={team._id}>
+                      <ListItem key={team._id}>
+                        <FormikCheckbox
+                          slot="start"
+                          value={team._id}
+                          name="teamMembers"
+                          label={team.name}
+                        ></FormikCheckbox>
+                        <div slot="headline">{team.name}</div>
+                        <div slot="supporting-text">{team.designation}</div>
+                        <div slot="trailing-supporting-text">{team.email}</div>
+                      </ListItem>
+                      {index < teams.data.length - 1 && <Divider />}
+                    </Fragment>
+                  ))}
+                </List>
+              )}
+              {errors.teamMembers && (
+                <div className="text-red-500">{errors.teamMembers}</div>
+              )}
             </Form>
 
             <div slot="actions" className="mt-4 flex justify-end gap-2">

@@ -7,7 +7,6 @@ import { Icon } from "../components/icon/icon";
 import { FilledButton, IconButton } from "../components/button/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/utils";
-import { TextButton } from "../components/button/button";
 
 const ProjectsLayout = () => {
   const [page, setPage] = useState(1);
@@ -41,7 +40,7 @@ const ProjectsLayout = () => {
           <FilledButton href="/projects/create">
             <Icon slot="icon">add</Icon> Create
           </FilledButton>
-          <div className="flex h-[80vh] flex-col overflow-auto rounded-xl">
+          <div className="flex h-[75vh] flex-col overflow-auto rounded-xl">
             {status === "pending" ? "Loading..." : ""}
             {projects?.data.map((project: IProject) => (
               <ProjectCard
