@@ -14,10 +14,11 @@ import { Fab } from "../components/fab/fab";
 import { Dialog } from "../components/dialog/dialog";
 import { TextButton } from "../components/button/button";
 import { OutlinedTextField } from "../components/textfield/textfield";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { MdDialog } from "@material/web/dialog/dialog";
 import { useField } from "formik";
+import { Checkbox } from "../components/checkbox/checkbox";
 
 const FormikOutlinedTextField = ({ label, ...props }: any) => {
   const [field, meta] = useField(props);
@@ -34,7 +35,14 @@ const FormikOutlinedTextField = ({ label, ...props }: any) => {
   );
 };
 
-const validationSchema = Yup.object({
+const createTeamValidationSchema = Yup.object({
+  name: Yup.string().required("Name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  designation: Yup.string().required("Designation is required"),
+});
+
+const updateTeamValidationSchema = Yup.object({
+  _id: Yup.string().required("Team ID is required"),
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   designation: Yup.string().required("Designation is required"),
@@ -43,11 +51,12 @@ const validationSchema = Yup.object({
 function Teams() {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
+  const [selectedTeams, setSelectedTeams] = useState<Set<string>>(new Set());
   const { status, data: teams } = useQuery({
     queryKey: ["/teams", page],
     queryFn: async () => {
       const data = await api.get("/teams", {
-        params: { page, limit: 5 },
+        params: { page, limit: 10 },
       });
       return data.data;
     },
@@ -62,10 +71,38 @@ function Teams() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/teams"] });
-      closeDialog();
+      closeCreateDialog();
     },
     onError: (error: any) => {
       console.error("Failed to create team", error);
+    },
+  });
+
+  const updateTeamMutation = useMutation({
+    mutationFn: async (updatedTeam: ITeam) => {
+      const response = await api.put(`/teams/${updatedTeam._id}`, updatedTeam);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/teams"] });
+      closeUpdateDialog();
+    },
+    onError: (error: any) => {
+      console.error("Failed to update team", error);
+    },
+  });
+
+  const deleteTeamMutation = useMutation({
+    mutationFn: async (teamId: string) => {
+      const response = await api.delete(`/teams/${teamId}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/teams"] });
+      setSelectedTeams(new Set());
+    },
+    onError: (error: any) => {
+      console.error("Failed to delete team", error);
     },
   });
 
@@ -76,7 +113,8 @@ function Teams() {
     setPage((old) => (teams?.hasMore ? old + 1 : old));
   };
 
-  const dialogRef = useRef<MdDialog>(null);
+  const createTeamDialogRef = useRef<MdDialog>(null);
+  const updateTeamDialogRef = useRef<MdDialog>(null);
   const initialValues = {
     name: "",
     email: "",
@@ -89,21 +127,51 @@ function Teams() {
     resetForm();
   };
 
-  const openDialog = () => {
-    dialogRef.current?.show();
+  const handleUpdateSubmit = (values: ITeam, { resetForm }: any) => {
+    console.log("Update form submitted:", values);
+    updateTeamMutation.mutate(values);
+    resetForm();
   };
 
-  const closeDialog = () => {
-    dialogRef.current?.close();
+  const openCreateDialog = () => {
+    createTeamDialogRef.current?.show();
   };
+
+  const closeCreateDialog = () => {
+    createTeamDialogRef.current?.close();
+  };
+
+  const openUpdateDialog = () => {
+    updateTeamDialogRef.current?.show();
+  };
+
+  const closeUpdateDialog = () => {
+    updateTeamDialogRef.current?.close();
+  };
+
+  const handleTeamSelect = (id: string) => {
+    setSelectedTeams((prev) => {
+      const newSelected = new Set(prev);
+      if (newSelected.has(id)) {
+        newSelected.delete(id);
+      } else {
+        newSelected.add(id);
+      }
+      return newSelected;
+    });
+  };
+
+  const selectedTeam = teams?.data.find((team: ITeam) =>
+    selectedTeams.has(team._id),
+  );
 
   return (
     <div className="flex flex-col gap-4">
-      <Dialog ref={dialogRef}>
+      <Dialog ref={createTeamDialogRef}>
         <div slot="headline">Add</div>
         <Formik
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={createTeamValidationSchema}
           onSubmit={handleSubmit}
         >
           {({ handleSubmit }) => (
@@ -124,7 +192,48 @@ function Teams() {
               </Form>
 
               <div slot="actions" className="mt-4 flex justify-end gap-2">
-                <TextButton onClick={closeDialog} value="cancel">
+                <TextButton onClick={closeCreateDialog} value="cancel">
+                  Cancel
+                </TextButton>
+                <TextButton onClick={() => handleSubmit()} value="ok">
+                  Ok
+                </TextButton>
+              </div>
+            </>
+          )}
+        </Formik>
+      </Dialog>
+
+      <Dialog ref={updateTeamDialogRef}>
+        <div slot="headline">Update</div>
+        <Formik
+          initialValues={
+            selectedTeam || { _id: "", name: "", email: "", designation: "" }
+          }
+          enableReinitialize
+          validationSchema={updateTeamValidationSchema}
+          onSubmit={handleUpdateSubmit}
+        >
+          {({ handleSubmit }) => (
+            <>
+              <Form slot="content" className="flex flex-col gap-4">
+                <Field name="_id" type="hidden" />
+                <FormikOutlinedTextField
+                  label="Name"
+                  name="name"
+                  required
+                  autoFocus
+                />
+                <FormikOutlinedTextField label="Email" name="email" required />
+                <FormikOutlinedTextField
+                  label="Designation"
+                  name="designation"
+                  required
+                />
+              </Form>
+
+              <div slot="actions" className="mt-4 flex justify-end gap-2">
+                <TextButton onClick={closeUpdateDialog} value="cancel">
                   Cancel
                 </TextButton>
                 <TextButton onClick={() => handleSubmit()} value="ok">
@@ -138,15 +247,61 @@ function Teams() {
 
       <h1 className="text-display-large">Teams</h1>
       <div className="flex flex-col gap-4">
-        <Fab label="Add" onClick={openDialog} variant="primary">
-          <Icon slot="icon">add</Icon> Create
-        </Fab>
+        <div className="flex flex-row items-center justify-between">
+          <Fab label="Add" onClick={openCreateDialog} variant="primary">
+            <Icon slot="icon">add</Icon> Create
+          </Fab>
+
+          <div className="flex flex-row items-center gap-4">
+            <IconButton
+              onClick={openUpdateDialog}
+              disabled={selectedTeams.size !== 1}
+            >
+              <Icon>edit</Icon>
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                const selectedTeamDetails = teams?.data.filter((team: ITeam) =>
+                  selectedTeams.has(team._id),
+                );
+                console.log("Selected Teams:", selectedTeamDetails);
+                selectedTeamDetails.forEach((team: ITeam) => {
+                  deleteTeamMutation.mutate(team._id);
+                });
+              }}
+              disabled={selectedTeams.size === 0}
+            >
+              <Icon>delete</Icon>
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                if (selectedTeams.size === teams?.data.length) {
+                  setSelectedTeams(new Set());
+                } else {
+                  setSelectedTeams(
+                    teams?.data.reduce((set: Set<string>, team: ITeam) => {
+                      set.add(team._id);
+                      return set;
+                    }, new Set<string>()),
+                  );
+                }
+              }}
+            >
+              <Icon>select_all</Icon>
+            </IconButton>
+          </div>
+        </div>
+
         {status === "pending" ? "Loading..." : ""}
         {teams?.data.length > 0 && (
           <List className="rounded-3xl">
             {teams?.data.map((team: ITeam, index: number) => (
               <Fragment key={team._id}>
-                <TeamCard {...team} />
+                <TeamCard
+                  {...team}
+                  selected={selectedTeams.has(team._id)}
+                  onSelect={() => handleTeamSelect(team._id)}
+                />
                 {index < teams.data.length - 1 && <Divider />}
               </Fragment>
             ))}
@@ -175,9 +330,22 @@ export interface ITeam {
   designation: string;
 }
 
-export function TeamCard({ _id, name, email, designation }: ITeam) {
+export function TeamCard({
+  _id,
+  name,
+  email,
+  designation,
+  selected,
+  onSelect,
+}: ITeam & { selected: boolean; onSelect: () => void }) {
   return (
     <ListItem key={_id}>
+      <Checkbox
+        slot="start"
+        checked={selected}
+        onChange={onSelect}
+        name={`team-${_id}`}
+      ></Checkbox>
       <div slot="headline">{name}</div>
       <div slot="supporting-text">{designation}</div>
       <div slot="trailing-supporting-text">{email}</div>
