@@ -40,7 +40,7 @@ const ProjectsLayout = () => {
           <FilledButton href="/projects/create">
             <Icon slot="icon">add</Icon> Create
           </FilledButton>
-          <div className="flex h-[75vh] flex-col overflow-auto rounded-xl">
+          <div className="flex flex-col overflow-auto rounded-xl">
             {status === "pending" ? "Loading..." : ""}
             {projects?.data.map((project: IProject) => (
               <ProjectCard

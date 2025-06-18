@@ -109,7 +109,7 @@ function Projects() {
       <div className="flex flex-row items-center justify-between">
         <h1 className="text-display-large">Project Details</h1>
         <div className="flex flex-row items-center justify-between gap-4">
-          <IconButton>
+          <IconButton onClick={() => navigate(`/projects/${pid}/edit`)}>
             <Icon>edit</Icon>
           </IconButton>
           <IconButton onClick={openDeleteDialog}>
