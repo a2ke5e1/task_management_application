@@ -8,6 +8,7 @@ import Tasks from "./Tasks";
 import Teams from "./pages/Teams";
 import ProjectsLayout from "./layouts/project";
 import Project from "./Projects";
+import CreateProjects from "./pages/CreateProjects";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<DashboardLayout />}>
             <Route index element={<Navigate to="/tasks" replace />} />
             <Route path="tasks" element={<Tasks />} />
+            <Route path="/projects/create" element={<CreateProjects />} />
             <Route path="projects" element={<ProjectsLayout />}>
               <Route path=":pid" element={<Project />} />
             </Route>

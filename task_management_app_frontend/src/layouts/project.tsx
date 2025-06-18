@@ -4,12 +4,14 @@ import React, { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "../api";
 import { Icon } from "../components/icon/icon";
-import { IconButton } from "../components/button/button";
+import { FilledButton, IconButton } from "../components/button/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/utils";
+import { TextButton } from "../components/button/button";
 
 const ProjectsLayout = () => {
   const [page, setPage] = useState(1);
+
   const { status, data: projects } = useQuery({
     queryKey: ["/projects", page],
     queryFn: async () => {
@@ -32,39 +34,47 @@ const ProjectsLayout = () => {
   const { pid } = useParams<{ pid: string }>();
 
   return (
-    <div className="flex flex-col items-start gap-8 sm:flex-row">
-      <div className="flex min-w-sm flex-col gap-4">
-        <h1 className="text-5xl">Projects</h1>
-        <div className="flex h-[80vh] flex-col overflow-auto rounded-xl">
-          {status === "pending" ? "Loading..." : ""}
-          {projects?.data.map((project: IProject) => (
-            <ProjectCard
-              key={project._id}
-              _id={project._id}
-              name={project.name}
-              description={project.description}
-              createdAt={project.createdAt}
-              selected={project._id === pid}
-            />
-          ))}
-        </div>
-        <div className="flex flex-row items-center gap-2">
-          <IconButton onClick={handlePrevButton} disabled={page === 1}>
-            <Icon>chevron_left</Icon>
-          </IconButton>
-          <div className="text-label-large">
-            {page}/{projects?.totalPages}
+    <>
+      <div className="flex flex-col items-start gap-8 sm:flex-row">
+        <div className="flex min-w-sm flex-col gap-4">
+          <h1 className="text-5xl">Projects</h1>
+          <FilledButton href="/projects/create">
+            <Icon slot="icon">add</Icon> Create
+          </FilledButton>
+          <div className="flex h-[80vh] flex-col overflow-auto rounded-xl">
+            {status === "pending" ? "Loading..." : ""}
+            {projects?.data.map((project: IProject) => (
+              <ProjectCard
+                key={project._id}
+                _id={project._id}
+                name={project.name}
+                description={project.description}
+                createdAt={project.createdAt}
+                selected={project._id === pid}
+              />
+            ))}
           </div>
-          <IconButton onClick={handleNextButton} disabled={!projects?.hasMore}>
-            <Icon>chevron_right</Icon>
-          </IconButton>
+          <div className="flex flex-row items-center gap-2">
+            <IconButton onClick={handlePrevButton} disabled={page === 1}>
+              <Icon>chevron_left</Icon>
+            </IconButton>
+            <div className="text-label-large">
+              {page}/{projects?.totalPages}
+            </div>
+            <IconButton
+              onClick={handleNextButton}
+              disabled={!projects?.hasMore}
+            >
+              <Icon>chevron_right</Icon>
+            </IconButton>
+          </div>
+        </div>
+
+        <div className="">
+          <Outlet />
         </div>
       </div>
-
-      <div className="">
-        <Outlet />
-      </div>
-    </div>
+    </>
   );
 };
 
