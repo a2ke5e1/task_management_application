@@ -21,6 +21,7 @@ import {
 import { MdDialog } from "@material/web/dialog/dialog";
 import { TeamCard, type ITeam } from "../components/teams/team-card";
 import { FormikOutlinedTextField } from "../components/textfield/textfield";
+import type { FormikHelpers } from "formik";
 
 function Teams() {
   const queryClient = useQueryClient();
@@ -47,7 +48,7 @@ function Teams() {
       queryClient.invalidateQueries({ queryKey: ["/teams"] });
       closeCreateDialog();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       console.error("Failed to create team", error);
     },
   });
@@ -61,7 +62,7 @@ function Teams() {
       queryClient.invalidateQueries({ queryKey: ["/teams"] });
       closeUpdateDialog();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       console.error("Failed to update team", error);
     },
   });
@@ -75,7 +76,7 @@ function Teams() {
       queryClient.invalidateQueries({ queryKey: ["/teams"] });
       setSelectedTeams(new Set());
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       console.error("Failed to delete team", error);
     },
   });
@@ -95,13 +96,19 @@ function Teams() {
     designation: "",
   };
 
-  const handleSubmit = (values: typeof initialValues, { resetForm }: any) => {
+  const handleSubmit = (
+    values: typeof initialValues,
+    { resetForm }: FormikHelpers<typeof initialValues>,
+  ) => {
     console.log("Form submitted:", values);
     createTeamMutation.mutate(values);
     resetForm();
   };
 
-  const handleUpdateSubmit = (values: ITeam, { resetForm }: any) => {
+  const handleUpdateSubmit = (
+    values: ITeam,
+    { resetForm }: FormikHelpers<ITeam>,
+  ) => {
     console.log("Update form submitted:", values);
     updateTeamMutation.mutate(values);
     resetForm();
