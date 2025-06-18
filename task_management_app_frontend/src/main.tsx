@@ -3,10 +3,11 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import DashboardLayout from "./layouts/dashboard.js";
-import Tasks from "./Tasks.js";
-import Projects from "./Projects.js";
-import Teams from "./pages/Teams.js";
+import DashboardLayout from "./layouts/dashboard";
+import Tasks from "./Tasks";
+import Teams from "./pages/Teams";
+import ProjectsLayout from "./layouts/project";
+import Project from "./Projects";
 
 const queryClient = new QueryClient();
 
@@ -17,9 +18,11 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
             <Route index element={<Navigate to="/tasks" replace />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/teams" element={<Teams />} />
+            <Route path="tasks" element={<Tasks />} />
+            <Route path="projects" element={<ProjectsLayout />}>
+              <Route path=":pid" element={<Project />} />
+            </Route>
+            <Route path="teams" element={<Teams />} />
           </Route>
         </Routes>
       </BrowserRouter>
