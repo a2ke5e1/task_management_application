@@ -4,6 +4,11 @@ import { useState } from "react";
 import type { IProject } from "./layouts/project-layout";
 import type { ITeam } from "./components/teams/team-card";
 import { Link } from "react-router";
+import { OutlinedSelect, SelectOption } from "./components/select/select";
+import type { MdOutlinedSelect } from "@material/web/select/outlined-select";
+import { OutlinedTextField } from "./components/textfield/textfield";
+import type { MdOutlinedTextField } from "@material/web/textfield/outlined-text-field";
+import { Icon } from "./components/icon/icon";
 
 function Tasks() {
   const [page, setPage] = useState(1);
@@ -64,68 +69,78 @@ function Tasks() {
       {/* Filters */}
       <div className="flex flex-row justify-between">
         <div className="flex flex-wrap gap-4">
-          <input
-            className="w-60 rounded border p-2"
+          <OutlinedTextField
+            className="h-[3.5rem]"
             placeholder="Search tasks"
             value={search}
-            onChange={(e) => {
+            onChange={(e: React.FormEvent<MdOutlinedTextField>) => {
               setPage(1);
-              setSearch(e.target.value);
+              setSearch((e.target as MdOutlinedTextField).value);
             }}
-          />
+          >
+            <Icon slot="trailing-icon">search</Icon>
+          </OutlinedTextField>
 
-          <select
-            className="rounded border p-2"
+          <OutlinedSelect
             value={statusFilter}
-            onChange={(e) => {
+            onChange={(e: React.FormEvent<MdOutlinedSelect>) => {
               setPage(1);
-              setStatusFilter(e.target.value);
+              setStatusFilter((e.target as MdOutlinedSelect).value);
             }}
           >
-            <option value="">All Status</option>
-            <option value="to-do">To Do</option>
-            <option value="in-progress">In Progress</option>
-            <option value="done">Done</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
+            <SelectOption value="">All Status</SelectOption>
+            <SelectOption value="to-do">To Do</SelectOption>
+            <SelectOption value="in-progress">In Progress</SelectOption>
+            <SelectOption value="done">Done</SelectOption>
+            <SelectOption value="cancelled">Cancelled</SelectOption>
+          </OutlinedSelect>
 
-          <select
-            className="rounded border p-2"
+          <OutlinedSelect
             value={memberFilter}
-            onChange={(e) => {
+            onChange={(e: React.FormEvent<MdOutlinedSelect>) => {
               setPage(1);
-              setMemberFilter(e.target.value);
+              setMemberFilter((e.target as MdOutlinedSelect).value);
             }}
           >
-            <option value="">All Members</option>
+            <SelectOption value="">All Members</SelectOption>
             {teamData?.data?.map((team: ITeam) => (
-              <option key={team._id} value={team._id}>
+              <SelectOption key={team._id} value={team._id}>
                 {team.name}
-              </option>
+              </SelectOption>
             ))}
-          </select>
+          </OutlinedSelect>
         </div>
 
         <div className="flex flex-wrap gap-4">
-          <input
-            type="datetime-local"
-            className="rounded border p-2"
-            value={startDate}
-            onChange={(e) => {
-              setPage(1);
-              setStartDate(e.target.value);
-            }}
-          />
+          <div className="relative flex flex-col gap-2">
+            <div className="bg-surface-container-lowest focus:text-primary absolute -top-2 left-2 px-2 text-[0.75rem]">
+              From
+            </div>
+            <input
+              type="datetime-local"
+              className="focus:outline-primary border-outline rounded border bg-transparent p-4 focus:outline-[0.2rem] dark:[color-scheme:dark]"
+              value={startDate}
+              onChange={(e) => {
+                setPage(1);
+                setStartDate(e.target.value);
+              }}
+            />
+          </div>
 
-          <input
-            type="datetime-local"
-            className="rounded border p-2"
-            value={endDate}
-            onChange={(e) => {
-              setPage(1);
-              setEndDate(e.target.value);
-            }}
-          />
+          <div className="relative flex flex-col gap-2">
+            <div className="bg-surface-container-lowest focus:text-primary absolute -top-2 left-2 px-2 text-[0.75rem]">
+              To
+            </div>
+            <input
+              type="datetime-local"
+              className="focus:outline-primary border-outline rounded border bg-transparent p-4 focus:outline-[0.2rem] dark:[color-scheme:dark]"
+              value={endDate}
+              onChange={(e) => {
+                setPage(1);
+                setEndDate(e.target.value);
+              }}
+            />
+          </div>
         </div>
       </div>
 

@@ -67,7 +67,7 @@ export default function CreateTasks() {
         validationSchema={createTasksValidationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, errors }) => (
+        {({ isSubmitting, errors, touched }) => (
           <>
             <Form className="flex max-w-lg flex-col gap-4">
               <Field name="status" type="hidden" value="to-do" />
@@ -84,12 +84,22 @@ export default function CreateTasks() {
                 rows={4}
                 required
               />
-              <FormikOutlinedTextField
-                label="Deadline"
-                name="deadline"
-                required
-                type="datetime-local"
-              />
+
+              <div className="relative flex flex-col gap-2">
+                <div className="bg-surface-container-lowest focus:text-primary absolute -top-2 left-2 px-2 text-[0.75rem]">
+                  Deadline
+                </div>
+                <Field
+                  label="Deadline"
+                  name="deadline"
+                  required
+                  className="focus:outline-primary border-outline rounded border bg-transparent p-2 py-4 focus:outline-[0.15rem] dark:[color-scheme:dark]"
+                  type="datetime-local"
+                />
+                {errors.deadline && touched.deadline && (
+                  <div className="text-error">{errors.deadline}</div>
+                )}
+              </div>
 
               <div className="text-label-large">Select Project</div>
               {projects?.data.length > 0 && (
