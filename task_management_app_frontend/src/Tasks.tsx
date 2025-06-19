@@ -1,6 +1,6 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "./api";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import type { IProject } from "./layouts/project-layout";
 import type { ITeam } from "./components/teams/team-card";
 import { OutlinedSelect, SelectOption } from "./components/select/select";
@@ -10,18 +10,29 @@ import type { MdOutlinedTextField } from "@material/web/textfield/outlined-text-
 import { Icon } from "./components/icon/icon";
 import { List, ListItem } from "./components/lists/list";
 import { Divider } from "./components/divider/divider";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { PaginationControls } from "./components/pagination-button/pagination-button";
+import { FilledButton, TextButton } from "./components/button/button";
 
 function Tasks() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [memberFilter, setMemberFilter] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Fetch team members for filtering
+  const search = searchParams.get("search") ?? "";
+  const statusFilter = searchParams.get("status") ?? "";
+  const memberFilter = searchParams.get("memberId") ?? "";
+  const startDate = searchParams.get("startDate") ?? "";
+  const endDate = searchParams.get("endDate") ?? "";
+  const page = Number(searchParams.get("page") ?? 1);
+
+  const updateFilters = (updates: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams);
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) newParams.set(key, value);
+      else newParams.delete(key);
+    });
+    setSearchParams(newParams);
+  };
+
   const { data: teamData } = useQuery({
     queryKey: ["/teams"],
     queryFn: async () => {
@@ -31,7 +42,15 @@ function Tasks() {
   });
 
   const { status, data: tasks } = useQuery({
-    queryKey: ["/tasks", page, search, statusFilter, memberFilter],
+    queryKey: [
+      "/tasks",
+      page,
+      search,
+      statusFilter,
+      memberFilter,
+      startDate,
+      endDate,
+    ],
     queryFn: async () => {
       const params: {
         page: number;
@@ -58,12 +77,9 @@ function Tasks() {
     staleTime: 5000,
   });
 
-  const handlePrevButton = () => {
-    setPage((old) => Math.max(old - 1, 1));
-  };
-  const handleNextButton = () => {
-    setPage((old) => (tasks?.hasMore ? old + 1 : old));
-  };
+  const handlePrevButton = () =>
+    updateFilters({ page: String(Math.max(page - 1, 1)) });
+  const handleNextButton = () => updateFilters({ page: String(page + 1) });
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -76,20 +92,24 @@ function Tasks() {
             className="h-[3.5rem]"
             placeholder="Search tasks"
             value={search}
-            onChange={(e: React.FormEvent<MdOutlinedTextField>) => {
-              setPage(1);
-              setSearch((e.target as MdOutlinedTextField).value);
-            }}
+            onChange={(e: React.FormEvent<MdOutlinedTextField>) =>
+              updateFilters({
+                page: "1",
+                search: (e.target as MdOutlinedTextField).value,
+              })
+            }
           >
             <Icon slot="trailing-icon">search</Icon>
           </OutlinedTextField>
 
           <OutlinedSelect
             value={statusFilter}
-            onChange={(e: React.FormEvent<MdOutlinedSelect>) => {
-              setPage(1);
-              setStatusFilter((e.target as MdOutlinedSelect).value);
-            }}
+            onChange={(e: React.FormEvent<MdOutlinedSelect>) =>
+              updateFilters({
+                page: "1",
+                status: (e.target as MdOutlinedSelect).value,
+              })
+            }
           >
             <SelectOption value="">All Status</SelectOption>
             <SelectOption value="to-do">To Do</SelectOption>
@@ -100,10 +120,12 @@ function Tasks() {
 
           <OutlinedSelect
             value={memberFilter}
-            onChange={(e: React.FormEvent<MdOutlinedSelect>) => {
-              setPage(1);
-              setMemberFilter((e.target as MdOutlinedSelect).value);
-            }}
+            onChange={(e: React.FormEvent<MdOutlinedSelect>) =>
+              updateFilters({
+                page: "1",
+                memberId: (e.target as MdOutlinedSelect).value,
+              })
+            }
           >
             <SelectOption value="">All Members</SelectOption>
             {teamData?.data?.map((team: ITeam) => (
@@ -112,6 +134,26 @@ function Tasks() {
               </SelectOption>
             ))}
           </OutlinedSelect>
+
+          <div className="flex flex-row items-center gap-4">
+            <FilledButton onClick={() => updateFilters({ page: "1" })}>
+              Apply Filters
+            </FilledButton>
+            <TextButton
+              onClick={() => {
+                updateFilters({
+                  page: "1",
+                  search: "",
+                  status: "",
+                  memberId: "",
+                  startDate: "",
+                  endDate: "",
+                });
+              }}
+            >
+              Clear Filters
+            </TextButton>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-4">
@@ -123,10 +165,9 @@ function Tasks() {
               type="datetime-local"
               className="focus:outline-primary border-outline rounded border bg-transparent p-4 focus:outline-[0.2rem] dark:[color-scheme:dark]"
               value={startDate}
-              onChange={(e) => {
-                setPage(1);
-                setStartDate(e.target.value);
-              }}
+              onChange={(e) =>
+                updateFilters({ page: "1", startDate: e.target.value })
+              }
             />
           </div>
 
@@ -138,10 +179,9 @@ function Tasks() {
               type="datetime-local"
               className="focus:outline-primary border-outline rounded border bg-transparent p-4 focus:outline-[0.2rem] dark:[color-scheme:dark]"
               value={endDate}
-              onChange={(e) => {
-                setPage(1);
-                setEndDate(e.target.value);
-              }}
+              onChange={(e) =>
+                updateFilters({ page: "1", endDate: e.target.value })
+              }
             />
           </div>
         </div>
