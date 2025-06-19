@@ -10,6 +10,8 @@ function Tasks() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [memberFilter, setMemberFilter] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   // Fetch team members for filtering
   const { data: teamData } = useQuery({
@@ -29,6 +31,8 @@ function Tasks() {
         search?: string;
         status?: string;
         memberId?: string;
+        startDate?: string;
+        endDate?: string;
       } = {
         page,
         limit: 10,
@@ -36,6 +40,8 @@ function Tasks() {
       if (search.trim()) params.search = search;
       if (statusFilter) params.status = statusFilter;
       if (memberFilter) params.memberId = memberFilter;
+      if (startDate) params.startDate = new Date(startDate).toISOString();
+      if (endDate) params.endDate = new Date(endDate).toISOString();
 
       const response = await api.get("/tasks", { params });
       return response.data;
@@ -56,47 +62,71 @@ function Tasks() {
       <h1 className="text-5xl">Tasks</h1>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-4">
-        <input
-          className="w-60 rounded border p-2"
-          placeholder="Search tasks"
-          value={search}
-          onChange={(e) => {
-            setPage(1);
-            setSearch(e.target.value);
-          }}
-        />
+      <div className="flex flex-row justify-between">
+        <div className="flex flex-wrap gap-4">
+          <input
+            className="w-60 rounded border p-2"
+            placeholder="Search tasks"
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+          />
 
-        <select
-          className="rounded border p-2"
-          value={statusFilter}
-          onChange={(e) => {
-            setPage(1);
-            setStatusFilter(e.target.value);
-          }}
-        >
-          <option value="">All Status</option>
-          <option value="to-do">To Do</option>
-          <option value="in-progress">In Progress</option>
-          <option value="done">Done</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
+          <select
+            className="rounded border p-2"
+            value={statusFilter}
+            onChange={(e) => {
+              setPage(1);
+              setStatusFilter(e.target.value);
+            }}
+          >
+            <option value="">All Status</option>
+            <option value="to-do">To Do</option>
+            <option value="in-progress">In Progress</option>
+            <option value="done">Done</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
 
-        <select
-          className="rounded border p-2"
-          value={memberFilter}
-          onChange={(e) => {
-            setPage(1);
-            setMemberFilter(e.target.value);
-          }}
-        >
-          <option value="">All Members</option>
-          {teamData?.data?.map((team: ITeam) => (
-            <option key={team._id} value={team._id}>
-              {team.name}
-            </option>
-          ))}
-        </select>
+          <select
+            className="rounded border p-2"
+            value={memberFilter}
+            onChange={(e) => {
+              setPage(1);
+              setMemberFilter(e.target.value);
+            }}
+          >
+            <option value="">All Members</option>
+            {teamData?.data?.map((team: ITeam) => (
+              <option key={team._id} value={team._id}>
+                {team.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-wrap gap-4">
+          <input
+            type="datetime-local"
+            className="rounded border p-2"
+            value={startDate}
+            onChange={(e) => {
+              setPage(1);
+              setStartDate(e.target.value);
+            }}
+          />
+
+          <input
+            type="datetime-local"
+            className="rounded border p-2"
+            value={endDate}
+            onChange={(e) => {
+              setPage(1);
+              setEndDate(e.target.value);
+            }}
+          />
+        </div>
       </div>
 
       {/* Task List */}
@@ -156,7 +186,15 @@ export function TaskCard({
       <div>{description}</div>
       <div className="text-gray-500">{project?.name}</div>
       <div className="text-sm text-gray-600">
-        Deadline: {new Date(deadline).toLocaleString()}
+        Deadline:{" "}
+        {new Date(deadline).toLocaleDateString("en-IN", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })}
       </div>
       <div>Status: {status}</div>
       <div className="mt-2 flex flex-wrap gap-2">
