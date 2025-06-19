@@ -70,8 +70,10 @@ export default function UpdateProjects() {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <h1 className="text-display-large">Update Project</h1>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-label-large text-primary mt-20 mb-8">
+        Update Project
+      </h1>
       <Formik
         initialValues={initialValues}
         validationSchema={updateProjectValidationSchema}

@@ -62,7 +62,7 @@ const ProjectsLayout = () => {
             handleNextButton={handleNextButton}
           />
         </div>
-        <div className="flex flex-1 flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           <Outlet />
         </div>
       </div>

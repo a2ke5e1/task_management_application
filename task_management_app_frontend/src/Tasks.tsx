@@ -65,7 +65,7 @@ function Tasks() {
         endDate?: string;
       } = {
         page,
-        limit: 10,
+        limit: 5,
       };
       if (search.trim()) params.search = search;
       if (statusFilter) params.status = statusFilter;
@@ -201,14 +201,20 @@ function Tasks() {
       <div className="flex flex-col gap-4">
         {status === "pending" && <p>Loading...</p>}
 
-        <List className="rounded-3xl">
-          {tasks?.data.map((task: ITask, index: number) => (
-            <Fragment key={task._id}>
-              <TaskCard key={task._id} {...task} />
-              {index < tasks.data.length - 1 && <Divider />}
-            </Fragment>
-          ))}
-        </List>
+        {tasks?.data?.length === 0 ? (
+          <p className="text-label-large text-center">
+            No tasks found. Try changing the filters or creating a new task.
+          </p>
+        ) : (
+          <List className="rounded-3xl">
+            {tasks?.data.map((task: ITask, index: number) => (
+              <Fragment key={task._id}>
+                <TaskCard key={task._id} {...task} />
+                {index < tasks.data.length - 1 && <Divider />}
+              </Fragment>
+            ))}
+          </List>
+        )}
       </div>
 
       {/* Pagination Controls */}

@@ -73,7 +73,7 @@ function Projects() {
   };
 
   return (
-    <div>
+    <>
       <Dialog ref={deleteDailogBoxRef}>
         <div slot="headline">Delete</div>
         <Formik
@@ -109,7 +109,7 @@ function Projects() {
       </Dialog>
 
       <div className="flex flex-row items-center justify-between">
-        <h1 className="text-display-large">Project Details</h1>
+        <h1 className="text-display-large"></h1>
         <div className="flex flex-row items-center justify-between gap-4">
           <IconButton onClick={() => navigate(`/projects/${pid}/edit`)}>
             <Icon>edit</Icon>
@@ -125,10 +125,22 @@ function Projects() {
         <p>Error loading project details.</p>
       ) : (
         <div className="mt-4">
-          <h2 className="text-3xl">{project.name}</h2>
-          <p className="text-lg">{project.description}</p>
-          <p className="text-sm text-gray-500">
-            Created at: {new Date(project.createdAt).toLocaleDateString()}
+          <h1 className="text-label-large text-primary mb-4">
+            Project Details
+          </h1>
+          <h2 className="text-headline-large text-on-surface">
+            {project.name}
+          </h2>
+          <p className="text-title-large text-on-surface-variant">
+            {project.description}
+          </p>
+          <p className="text-body-large text-gray-500">
+            Created at:{" "}
+            {new Date(project.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
         </div>
       )}
@@ -150,7 +162,7 @@ function Projects() {
             </List>
           )}
       </div>
-    </div>
+    </>
   );
 }
 
