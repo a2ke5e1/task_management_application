@@ -7,13 +7,38 @@ import { Link } from "react-router";
 
 function Tasks() {
   const [page, setPage] = useState(1);
-  const { status, data: tasks } = useQuery({
-    queryKey: ["/tasks", page],
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [memberFilter, setMemberFilter] = useState("");
+
+  // Fetch team members for filtering
+  const { data: teamData } = useQuery({
+    queryKey: ["/teams"],
     queryFn: async () => {
-      const data = await api.get("/tasks", {
-        params: { page, limit: 10 },
-      });
-      return data.data;
+      const res = await api.get("/teams");
+      return res.data;
+    },
+  });
+
+  const { status, data: tasks } = useQuery({
+    queryKey: ["/tasks", page, search, statusFilter, memberFilter],
+    queryFn: async () => {
+      const params: {
+        page: number;
+        limit: number;
+        search?: string;
+        status?: string;
+        memberId?: string;
+      } = {
+        page,
+        limit: 10,
+      };
+      if (search.trim()) params.search = search;
+      if (statusFilter) params.status = statusFilter;
+      if (memberFilter) params.memberId = memberFilter;
+
+      const response = await api.get("/tasks", { params });
+      return response.data;
     },
     placeholderData: keepPreviousData,
     staleTime: 5000,
@@ -27,27 +52,79 @@ function Tasks() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6 p-6">
       <h1 className="text-5xl">Tasks</h1>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-4">
+        <input
+          className="w-60 rounded border p-2"
+          placeholder="Search tasks"
+          value={search}
+          onChange={(e) => {
+            setPage(1);
+            setSearch(e.target.value);
+          }}
+        />
+
+        <select
+          className="rounded border p-2"
+          value={statusFilter}
+          onChange={(e) => {
+            setPage(1);
+            setStatusFilter(e.target.value);
+          }}
+        >
+          <option value="">All Status</option>
+          <option value="to-do">To Do</option>
+          <option value="in-progress">In Progress</option>
+          <option value="done">Done</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+
+        <select
+          className="rounded border p-2"
+          value={memberFilter}
+          onChange={(e) => {
+            setPage(1);
+            setMemberFilter(e.target.value);
+          }}
+        >
+          <option value="">All Members</option>
+          {teamData?.data?.map((team: ITeam) => (
+            <option key={team._id} value={team._id}>
+              {team.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Task List */}
       <div className="flex flex-col gap-4">
-        {status === "pending" ? "Loading..." : ""}
+        {status === "pending" && <p>Loading...</p>}
         {tasks?.data.map((task: ITask) => (
           <TaskCard key={task._id} {...task} />
         ))}
       </div>
-      <div className="flex flex-row items-center gap-2">
+
+      {/* Pagination Controls */}
+      <div className="flex flex-row items-center gap-4">
         <button
-          className="rounded-full bg-blue-200 p-4"
+          className="rounded-full bg-blue-200 px-4 py-2 disabled:opacity-50"
           onClick={handlePrevButton}
+          disabled={page === 1}
         >
-          prev
+          Prev
         </button>
-        {page}/{tasks?.totalPages}
+        <span>
+          Page {page} / {tasks?.totalPages || 1}
+        </span>
         <button
-          className="rounded-full bg-blue-200 p-4"
+          className="rounded-full bg-blue-200 px-4 py-2 disabled:opacity-50"
           onClick={handleNextButton}
+          disabled={!tasks?.hasMore || page >= tasks?.totalPages}
         >
-          next
+          Next
         </button>
       </div>
     </div>
@@ -74,18 +151,27 @@ export function TaskCard({
   status,
 }: ITask) {
   return (
-    <div>
-      <div>{title}</div>
+    <div className="rounded border p-4 shadow-md">
+      <div className="text-xl font-semibold">{title}</div>
       <div>{description}</div>
-      <div>{project?.name}</div>
-      <div>{new Date(deadline).toString()}</div>
-      <div>{status}</div>
-      <div>
+      <div className="text-gray-500">{project?.name}</div>
+      <div className="text-sm text-gray-600">
+        Deadline: {new Date(deadline).toLocaleString()}
+      </div>
+      <div>Status: {status}</div>
+      <div className="mt-2 flex flex-wrap gap-2">
         {assignedMembers.map((team) => (
-          <div key={team._id}>{team.name}</div>
+          <span
+            key={team._id}
+            className="rounded bg-gray-200 px-2 py-1 text-sm"
+          >
+            {team.name}
+          </span>
         ))}
       </div>
-      <Link to={`${_id}/edit`}>Edit </Link>
+      <Link to={`${_id}/edit`} className="mt-2 inline-block text-blue-500">
+        Edit
+      </Link>
     </div>
   );
 }
