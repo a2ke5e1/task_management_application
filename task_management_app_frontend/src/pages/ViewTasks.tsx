@@ -56,8 +56,8 @@ export default function ViewTasks() {
     <div className="flex flex-col gap-4 p-4">
       <DeleteConfirmDialog
         ref={deleteDialogBoxRef}
-        title="Delete"
-        message={`Are you sure you want to delete ${tasks?.title}?`}
+        title="Delete?"
+        message={`Are you sure you want to delete ${tasks?.title}? This action cannot be undone.`}
         initialValues={initialValues}
         handleOnDelete={(values) => deleteMutation.mutateAsync(values)}
         onClose={() => deleteDialogBoxRef.current?.close()}

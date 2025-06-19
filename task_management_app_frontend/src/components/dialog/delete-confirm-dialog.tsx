@@ -2,6 +2,7 @@ import { Field, Form, Formik, type FormikHelpers } from "formik";
 import { Dialog } from "./dialog";
 import { TextButton } from "../button/button";
 import type { MdDialog } from "@material/web/dialog/dialog";
+import type React from "react";
 
 interface IDeleteConfirmDialogProps {
   ref: React.RefObject<MdDialog | null>;
@@ -73,6 +74,42 @@ export default function DeleteConfirmDialog({
             </>
           )}
         </Formik>
+      </Dialog>
+    </>
+  );
+}
+
+interface IAlertDialogProps {
+  ref: React.RefObject<MdDialog | null>;
+  title: string;
+  message: React.ReactNode | string;
+  confirmButtonText?: string;
+  cancelButtonText?: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+export function AlertDialog({
+  ref,
+  title,
+  message,
+  confirmButtonText = "Ok",
+  cancelButtonText = "Cancel",
+  onConfirm,
+  onCancel,
+}: IAlertDialogProps) {
+  return (
+    <>
+      <Dialog ref={ref}>
+        <div slot="headline">{title}</div>
+        <div slot="content" className="flex flex-col gap-4">
+          <p>{message}</p>
+          <div slot="actions" className="mt-4 flex justify-end gap-2">
+            <TextButton type="button" onClick={onCancel}>
+              {cancelButtonText}
+            </TextButton>
+            <TextButton onClick={onConfirm}>{confirmButtonText}</TextButton>
+          </div>
+        </div>
       </Dialog>
     </>
   );

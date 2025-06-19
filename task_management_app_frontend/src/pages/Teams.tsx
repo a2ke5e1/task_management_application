@@ -23,6 +23,7 @@ import { TeamCard, type ITeam } from "../components/teams/team-card";
 import { FormikOutlinedTextField } from "../components/textfield/textfield";
 import type { FormikHelpers } from "formik";
 import { PaginationControls } from "../components/pagination-button/pagination-button";
+import { AlertDialog } from "../components/dialog/delete-confirm-dialog";
 
 function Teams() {
   const queryClient = useQueryClient();
@@ -149,6 +150,28 @@ function Teams() {
     selectedTeams.has(team._id),
   );
 
+  const alertDialogRef = useRef<MdDialog>(null);
+  const handleDeleteConfirm = () => {
+    const selectedTeamDetails = teams?.data.filter((team: ITeam) =>
+      selectedTeams.has(team._id),
+    );
+    console.log("Selected Teams:", selectedTeamDetails);
+    selectedTeamDetails.forEach((team: ITeam) => {
+      deleteTeamMutation.mutate(team._id);
+    });
+    alertDialogRef.current?.close();
+  };
+
+  const handleDeleteCancel = () => {
+    alertDialogRef.current?.close();
+  };
+
+  const openDeleteDialog = () => {
+    if (selectedTeams.size > 0) {
+      alertDialogRef.current?.show();
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <Dialog ref={createTeamDialogRef}>
@@ -237,6 +260,27 @@ function Teams() {
         </Formik>
       </Dialog>
 
+      <AlertDialog
+        ref={alertDialogRef}
+        title="Delete?"
+        message={
+          <div>
+            Are you sure you want to delete the{" "}
+            {selectedTeams.size > 1 ? (
+              <span>
+                <span className="font-bold">{selectedTeams.size}</span> selected
+                teams
+              </span>
+            ) : (
+              <span className="font-bold">{selectedTeam?.name || "1"}</span>
+            )}
+            ? This action cannot be undone.
+          </div>
+        }
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
+
       <h1 className="text-display-large mb-8">Teams</h1>
       <div className="flex flex-col gap-4">
         <div className="flex flex-row items-center justify-between">
@@ -252,15 +296,7 @@ function Teams() {
               <Icon>edit</Icon>
             </IconButton>
             <IconButton
-              onClick={() => {
-                const selectedTeamDetails = teams?.data.filter((team: ITeam) =>
-                  selectedTeams.has(team._id),
-                );
-                console.log("Selected Teams:", selectedTeamDetails);
-                selectedTeamDetails.forEach((team: ITeam) => {
-                  deleteTeamMutation.mutate(team._id);
-                });
-              }}
+              onClick={openDeleteDialog}
               disabled={selectedTeams.size === 0}
             >
               <Icon>delete</Icon>
