@@ -102,7 +102,7 @@ export function AlertDialog({
       <Dialog ref={ref}>
         <div slot="headline">{title}</div>
         <div slot="content" className="flex flex-col gap-4">
-          <p>{message}</p>
+          {message}
           <div slot="actions" className="mt-4 flex justify-end gap-2">
             <TextButton type="button" onClick={onCancel}>
               {cancelButtonText}

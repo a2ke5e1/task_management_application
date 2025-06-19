@@ -245,7 +245,7 @@ function Teams() {
                 <div slot="actions" className="mt-4 flex justify-end gap-2">
                   <TextButton
                     type="reset"
-                    onClick={closeCreateDialog}
+                    onClick={closeUpdateDialog}
                     value="cancel"
                   >
                     Cancel
