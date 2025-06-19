@@ -1,16 +1,43 @@
 import api from "../api";
 import { type ITeam } from "../components/teams/team-card";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Fragment } from "react/jsx-runtime";
 import { Divider } from "../components/divider/divider";
 import { List, ListItem } from "../components/lists/list";
 import type { ITask } from "../Tasks";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IconButton } from "../components/button/button";
 import { Icon } from "../components/icon/icon";
+import DeleteConfirmDialog from "../components/dialog/delete-confirm-dialog";
+import { useRef } from "react";
+import type { MdDialog } from "@material/web/dialog/dialog";
 
 export default function ViewTasks() {
   const { taskId } = useParams<{ taskId: string }>();
+  const initialValues = {
+    _id: taskId || "",
+  };
+  const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
+  const deleteDialogBoxRef = useRef<MdDialog>(null);
+  const openDeleteDialog = () => {
+    deleteDialogBoxRef.current?.show();
+  };
+  const deleteMutation = useMutation({
+    mutationFn: async (values: typeof initialValues) => {
+      const response = await api.delete(`/tasks/${values._id}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", taskId] });
+      navigate("/tasks");
+    },
+    onError: (error: Error) => {
+      console.error("Failed to delete tasks", error);
+    },
+  });
 
   const { isLoading, data: tasks } = useQuery({
     queryKey: ["tasks", taskId],
@@ -27,11 +54,25 @@ export default function ViewTasks() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
+      <DeleteConfirmDialog
+        ref={deleteDialogBoxRef}
+        title="Delete"
+        message={`Are you sure you want to delete ${tasks?.title}?`}
+        initialValues={initialValues}
+        handleOnDelete={(values) => deleteMutation.mutateAsync(values)}
+        onClose={() => deleteDialogBoxRef.current?.close()}
+      />
+
       <div className="flex flex-row items-center justify-between">
         <h1 className="text-display-large mb-8">Task</h1>
-        <IconButton href={`/tasks/${taskId}/edit`}>
-          <Icon>edit</Icon>
-        </IconButton>
+        <div className="flex flex-row items-center gap-2">
+          <IconButton href={`/tasks/${taskId}/edit`}>
+            <Icon>edit</Icon>
+          </IconButton>
+          <IconButton onClick={openDeleteDialog}>
+            <Icon>delete</Icon>
+          </IconButton>
+        </div>
       </div>
 
       <div>

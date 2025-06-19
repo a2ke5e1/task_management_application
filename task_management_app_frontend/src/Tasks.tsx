@@ -10,12 +10,14 @@ import type { MdOutlinedTextField } from "@material/web/textfield/outlined-text-
 import { Icon } from "./components/icon/icon";
 import { List, ListItem } from "./components/lists/list";
 import { Divider } from "./components/divider/divider";
-import { Link, useSearchParams } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { PaginationControls } from "./components/pagination-button/pagination-button";
 import { FilledButton, TextButton } from "./components/button/button";
+import { Fab } from "./components/fab/fab";
 
 function Tasks() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const search = searchParams.get("search") ?? "";
   const statusFilter = searchParams.get("status") ?? "";
@@ -84,6 +86,13 @@ function Tasks() {
   return (
     <div className="flex flex-col gap-6 p-6">
       <h1 className="text-5xl">Tasks</h1>
+      <Fab
+        label="Add"
+        onClick={() => navigate("/tasks/create")}
+        variant="primary"
+      >
+        <Icon slot="icon">add</Icon> Create
+      </Fab>
 
       {/* Filters */}
       <div className="flex flex-row justify-between">
