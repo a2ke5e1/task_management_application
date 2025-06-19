@@ -13,6 +13,7 @@ import UpdateProjects from "./pages/UpdateProjects";
 import CreateTasks from "./pages/CreateTasks";
 import UpdateTasks from "./pages/UpdateTasks";
 import ViewTasks from "./pages/ViewTasks";
+import WelcomeProject from "./pages/WelcomeProject";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="tasks/:taskId" element={<ViewTasks />} />
             <Route path="tasks/:taskId/edit" element={<UpdateTasks />} />
             <Route path="projects" element={<ProjectsLayout />}>
+              <Route index element={<WelcomeProject />} />
               <Route path="create" element={<CreateProjects />} />
               <Route path=":pid" element={<Project />} />
               <Route path=":pid/edit" element={<UpdateProjects />} />

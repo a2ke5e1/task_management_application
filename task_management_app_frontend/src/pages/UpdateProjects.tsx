@@ -120,7 +120,10 @@ export default function UpdateProjects() {
                 </div>
               )}
               <div className="mt-4 flex justify-start gap-4">
-                <TextButton type="reset" value="cancel">
+                <TextButton
+                  type="button"
+                  onClick={() => navigate("/projects/" + pid)}
+                >
                   Cancel
                 </TextButton>
                 <FilledButton type="submit" disabled={isSubmitting}>

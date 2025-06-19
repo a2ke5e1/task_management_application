@@ -45,7 +45,7 @@ export default function UpdateTasks() {
     deadline: tasks?.deadline
       ? formatDateToLocalISO(new Date(tasks.deadline))
       : "",
-    project: tasks?.project || "",
+    project: tasks?.project._id || "",
     status: tasks?.status || "to-do",
     assignedMembers: tasks?.assignedMembers.map((member) => member._id) || [],
   };
@@ -203,7 +203,10 @@ export default function UpdateTasks() {
               )}
 
               <div className="mt-4 flex justify-start gap-4">
-                <TextButton type="reset" value="cancel">
+                <TextButton
+                  type="button"
+                  onClick={() => navigate("/tasks/" + taskId)}
+                >
                   Cancel
                 </TextButton>
                 <FilledButton type="submit" disabled={isSubmitting}>
