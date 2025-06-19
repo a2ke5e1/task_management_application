@@ -3,6 +3,7 @@ import api from "./api";
 import { useState } from "react";
 import type { IProject } from "./layouts/project-layout";
 import type { ITeam } from "./components/teams/team-card";
+import { Link } from "react-router";
 
 function Tasks() {
   const [page, setPage] = useState(1);
@@ -64,6 +65,7 @@ export interface ITask {
 }
 
 export function TaskCard({
+  _id,
   title,
   description,
   deadline,
@@ -83,6 +85,7 @@ export function TaskCard({
           <div key={team._id}>{team.name}</div>
         ))}
       </div>
+      <Link to={`${_id}/edit`}>Edit </Link>
     </div>
   );
 }

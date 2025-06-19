@@ -15,7 +15,7 @@ export default function UpdateProjects() {
   const navigate = useNavigate();
   const { pid } = useParams<{ pid: string }>();
 
-  const { data: project } = useQuery({
+  const { isLoading, data: project } = useQuery({
     queryKey: ["projects", pid],
     queryFn: async () => {
       const data = await api.get(`/projects/${pid}`);
@@ -64,6 +64,10 @@ export default function UpdateProjects() {
       return data.data;
     },
   });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex flex-col gap-4 p-4">
