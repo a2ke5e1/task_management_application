@@ -1,14 +1,17 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "./api";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import type { IProject } from "./layouts/project-layout";
 import type { ITeam } from "./components/teams/team-card";
-import { Link } from "react-router";
 import { OutlinedSelect, SelectOption } from "./components/select/select";
 import type { MdOutlinedSelect } from "@material/web/select/outlined-select";
 import { OutlinedTextField } from "./components/textfield/textfield";
 import type { MdOutlinedTextField } from "@material/web/textfield/outlined-text-field";
 import { Icon } from "./components/icon/icon";
+import { List, ListItem } from "./components/lists/list";
+import { Divider } from "./components/divider/divider";
+import { Link } from "react-router";
+import { PaginationControls } from "./components/pagination-button/pagination-button";
 
 function Tasks() {
   const [page, setPage] = useState(1);
@@ -147,31 +150,25 @@ function Tasks() {
       {/* Task List */}
       <div className="flex flex-col gap-4">
         {status === "pending" && <p>Loading...</p>}
-        {tasks?.data.map((task: ITask) => (
-          <TaskCard key={task._id} {...task} />
-        ))}
+
+        <List className="rounded-3xl">
+          {tasks?.data.map((task: ITask, index: number) => (
+            <Fragment key={task._id}>
+              <TaskCard key={task._id} {...task} />
+              {index < tasks.data.length - 1 && <Divider />}
+            </Fragment>
+          ))}
+        </List>
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex flex-row items-center gap-4">
-        <button
-          className="rounded-full bg-blue-200 px-4 py-2 disabled:opacity-50"
-          onClick={handlePrevButton}
-          disabled={page === 1}
-        >
-          Prev
-        </button>
-        <span>
-          Page {page} / {tasks?.totalPages || 1}
-        </span>
-        <button
-          className="rounded-full bg-blue-200 px-4 py-2 disabled:opacity-50"
-          onClick={handleNextButton}
-          disabled={!tasks?.hasMore || page >= tasks?.totalPages}
-        >
-          Next
-        </button>
-      </div>
+      <PaginationControls
+        page={page}
+        totalPages={tasks?.totalPages}
+        hasMore={tasks?.hasMore}
+        handlePrevButton={handlePrevButton}
+        handleNextButton={handleNextButton}
+      />
     </div>
   );
 }
@@ -196,36 +193,44 @@ export function TaskCard({
   status,
 }: ITask) {
   return (
-    <div className="rounded border p-4 shadow-md">
-      <div className="text-xl font-semibold">{title}</div>
-      <div>{description}</div>
-      <div className="text-gray-500">{project?.name}</div>
-      <div className="text-sm text-gray-600">
-        Deadline:{" "}
-        {new Date(deadline).toLocaleDateString("en-IN", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })}
-      </div>
-      <div>Status: {status}</div>
-      <div className="mt-2 flex flex-wrap gap-2">
-        {assignedMembers.map((team) => (
-          <span
-            key={team._id}
-            className="rounded bg-gray-200 px-2 py-1 text-sm"
-          >
-            {team.name}
-          </span>
-        ))}
-      </div>
-      <Link to={`${_id}/edit`} className="mt-2 inline-block text-blue-500">
-        Edit
-      </Link>
-    </div>
+    <Link to={`/tasks/${_id}`}>
+      <ListItem key={_id}>
+        <div slot="headline" className="text-headline-large">
+          {title}
+        </div>
+        <div slot="supporting-text" className="text-body-large">
+          <div>{description}</div>
+          <div className="my-4">
+            <div>{project?.name}</div>
+            <div>{project?.description}</div>
+          </div>
+          <div className="text-label-small my-4 flex flex-row items-center gap-2">
+            <span className="material-symbols-rounded text-[1rem]">
+              schedule
+            </span>
+            {new Date(deadline).toLocaleDateString("en-IN", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            })}
+          </div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {assignedMembers.map((team) => (
+              <span
+                key={team._id}
+                className="rounded bg-gray-200 px-2 py-1 text-sm"
+              >
+                {team.name}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div slot="trailing-supporting-text">{status}</div>
+      </ListItem>
+    </Link>
   );
 }
 

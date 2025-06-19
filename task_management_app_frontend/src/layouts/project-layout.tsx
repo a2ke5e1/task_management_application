@@ -4,9 +4,10 @@ import React, { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "../api";
 import { Icon } from "../components/icon/icon";
-import { FilledButton, IconButton } from "../components/button/button";
+import { FilledButton } from "../components/button/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/utils";
+import { PaginationControls } from "../components/pagination-button/pagination-button";
 
 const ProjectsLayout = () => {
   const [page, setPage] = useState(1);
@@ -53,20 +54,13 @@ const ProjectsLayout = () => {
               />
             ))}
           </div>
-          <div className="flex flex-row items-center gap-2">
-            <IconButton onClick={handlePrevButton} disabled={page === 1}>
-              <Icon>chevron_left</Icon>
-            </IconButton>
-            <div className="text-label-large">
-              {page}/{projects?.totalPages}
-            </div>
-            <IconButton
-              onClick={handleNextButton}
-              disabled={!projects?.hasMore}
-            >
-              <Icon>chevron_right</Icon>
-            </IconButton>
-          </div>
+          <PaginationControls
+            page={page}
+            totalPages={projects?.totalPages}
+            hasMore={projects?.hasMore}
+            handlePrevButton={handlePrevButton}
+            handleNextButton={handleNextButton}
+          />
         </div>
         <div className="flex flex-1 flex-col gap-4">
           <Outlet />

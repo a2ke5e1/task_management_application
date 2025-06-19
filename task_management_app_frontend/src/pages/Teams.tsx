@@ -22,6 +22,7 @@ import { MdDialog } from "@material/web/dialog/dialog";
 import { TeamCard, type ITeam } from "../components/teams/team-card";
 import { FormikOutlinedTextField } from "../components/textfield/textfield";
 import type { FormikHelpers } from "formik";
+import { PaginationControls } from "../components/pagination-button/pagination-button";
 
 function Teams() {
   const queryClient = useQueryClient();
@@ -299,17 +300,13 @@ function Teams() {
           </List>
         )}
       </div>
-      <div className="flex flex-row items-center gap-2">
-        <IconButton onClick={handlePrevButton} disabled={page === 1}>
-          <Icon>chevron_left</Icon>
-        </IconButton>
-        <div className="text-label-large">
-          {page}/{teams?.totalPages}
-        </div>
-        <IconButton onClick={handleNextButton} disabled={!teams?.hasMore}>
-          <Icon>chevron_right</Icon>
-        </IconButton>
-      </div>
+      <PaginationControls
+        page={page}
+        totalPages={teams?.totalPages}
+        hasMore={teams?.hasMore}
+        handlePrevButton={handlePrevButton}
+        handleNextButton={handleNextButton}
+      />
     </div>
   );
 }
