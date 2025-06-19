@@ -1,8 +1,5 @@
 import { Form, Formik } from "formik";
-import {
-  createProjectValidationSchema,
-  updateProjectValidationSchema,
-} from "../schemas/projects";
+import { updateProjectValidationSchema } from "../schemas/projects";
 import { FormikOutlinedTextField } from "../components/textfield/textfield";
 import { FilledButton, TextButton } from "../components/button/button";
 import api from "../api";
@@ -114,7 +111,9 @@ export default function UpdateProjects() {
                 </List>
               )}
               {errors.teamMembers && (
-                <div className="text-red-500">{errors.teamMembers}</div>
+                <div className="text-red-500">
+                  {errors.teamMembers.toString()}
+                </div>
               )}
               <div className="mt-4 flex justify-start gap-4">
                 <TextButton type="reset" value="cancel">
