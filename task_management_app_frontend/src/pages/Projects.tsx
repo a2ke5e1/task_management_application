@@ -6,9 +6,11 @@ import type { IProject } from "../layouts/project-layout";
 import { IconButton, TextButton } from "../components/button/button";
 import { Icon } from "../components/icon/icon";
 import type { MdDialog } from "@material/web/dialog/dialog";
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { Dialog } from "../components/dialog/dialog";
 import { Field, Form, Formik, type FormikHelpers } from "formik";
+import { List, ListItem } from "../components/lists/list";
+import { Divider } from "../components/divider/divider";
 
 function Projects() {
   const { pid } = useParams<{ pid: string }>();
@@ -132,13 +134,21 @@ function Projects() {
       )}
       <div className="mt-8">
         <h2 className="text-2xl">Teams</h2>
-        <ul className="list-disc pl-5">
-          {project?.teamMembers.map((team: ITeam) => (
-            <li key={team._id} className="mt-2">
-              {team.name}
-            </li>
-          ))}
-        </ul>
+        {Array.isArray(project?.teamMembers) &&
+          project.teamMembers.length > 0 && (
+            <List className="my-4 rounded-3xl">
+              {project.teamMembers.map((team: ITeam, index: number) => (
+                <Fragment key={team._id}>
+                  <ListItem key={team._id}>
+                    <div slot="headline">{team.name}</div>
+                    <div slot="supporting-text">{team.designation}</div>
+                    <div slot="trailing-supporting-text">{team.email}</div>
+                  </ListItem>
+                  {index < project.teamMembers.length - 1 && <Divider />}
+                </Fragment>
+              ))}
+            </List>
+          )}
       </div>
     </div>
   );

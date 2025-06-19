@@ -108,9 +108,9 @@ tasksRouter.get(
   async (req: Request<ReadTaskInput["params"], {}, {}>, res: Response) => {
     try {
       const { taskId } = req.params;
-      const data = await Tasks.findOne({ _id: taskId }).populate(
-        "assignedMembers"
-      );
+      const data = await Tasks.findOne({ _id: taskId })
+        .populate("assignedMembers")
+        .populate("project");
       res.status(200).json({ data });
     } catch (e: any) {
       console.warn(e);

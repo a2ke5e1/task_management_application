@@ -193,7 +193,7 @@ export function TaskCard({
   status,
 }: ITask) {
   return (
-    <Link to={`/tasks/${_id}`}>
+    <Link to={`/tasks/${_id}/`}>
       <ListItem key={_id}>
         <div slot="headline" className="text-headline-large">
           {title}
@@ -217,15 +217,20 @@ export function TaskCard({
               hour12: true,
             })}
           </div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {assignedMembers.map((team) => (
-              <span
-                key={team._id}
-                className="rounded bg-gray-200 px-2 py-1 text-sm"
-              >
-                {team.name}
-              </span>
-            ))}
+          <div className="flex flex-col gap-2">
+            {assignedMembers.length > 0 && (
+              <div className="text-label-large">Assigned Members</div>
+            )}
+            <div className="flex flex-wrap gap-2">
+              {assignedMembers.map((team) => (
+                <span
+                  key={team._id}
+                  className="bg-secondary-container text-on-secondary-container rounded px-2 py-1 text-sm"
+                >
+                  {team.name}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
         <div slot="trailing-supporting-text">{status}</div>
