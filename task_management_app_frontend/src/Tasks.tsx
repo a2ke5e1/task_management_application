@@ -14,6 +14,7 @@ import { Link, useNavigate, useSearchParams } from "react-router";
 import { PaginationControls } from "./components/pagination-button/pagination-button";
 import { FilledButton, TextButton } from "./components/button/button";
 import { Fab } from "./components/fab/fab";
+import { formatStatus } from "./lib/utils";
 
 function Tasks() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -245,26 +246,32 @@ export function TaskCard({
     <Link to={`/tasks/${_id}/`}>
       <ListItem key={_id}>
         <div slot="headline" className="text-headline-large">
-          {title}
+          <div className="flex flex-row items-center justify-between">
+            <div>{title}</div>
+            <div className="bg-primary-container text-on-primary-container text-label-large w-fit rounded-2xl px-4 py-2">
+              {formatStatus(status)}
+            </div>
+          </div>
         </div>
         <div slot="supporting-text" className="text-body-large">
-          <div>{description}</div>
+          <div className="line-clamp-2 max-w-[100ch]">{description}</div>
           <div className="my-4">
-            <div>{project?.name}</div>
-            <div>{project?.description}</div>
-          </div>
-          <div className="text-label-small my-4 flex flex-row items-center gap-2">
-            <span className="material-symbols-rounded text-[1rem]">
-              schedule
-            </span>
-            {new Date(deadline).toLocaleDateString("en-IN", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })}
+            <div className="text-label-small">Project</div>
+            <div className="text-title-medium">{project?.name}</div>
+
+            <div className="text-label-small flex flex-row items-center gap-2">
+              <span className="material-symbols-rounded text-[1rem]">
+                schedule
+              </span>
+              {new Date(deadline).toLocaleDateString("en-IN", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })}
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             {assignedMembers.length > 0 && (
@@ -274,7 +281,7 @@ export function TaskCard({
               {assignedMembers.map((team) => (
                 <span
                   key={team._id}
-                  className="bg-secondary-container text-on-secondary-container rounded px-2 py-1 text-sm"
+                  className="bg-secondary-container text-on-secondary-container text-label-large rounded-xl px-4 py-2 text-sm"
                 >
                   {team.name}
                 </span>
@@ -282,7 +289,6 @@ export function TaskCard({
             </div>
           </div>
         </div>
-        <div slot="trailing-supporting-text">{status}</div>
       </ListItem>
     </Link>
   );

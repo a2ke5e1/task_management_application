@@ -11,6 +11,7 @@ import { Icon } from "../components/icon/icon";
 import DeleteConfirmDialog from "../components/dialog/delete-confirm-dialog";
 import { useRef } from "react";
 import type { MdDialog } from "@material/web/dialog/dialog";
+import { formatStatus } from "../lib/utils";
 
 export default function ViewTasks() {
   const { taskId } = useParams<{ taskId: string }>();
@@ -64,7 +65,7 @@ export default function ViewTasks() {
       />
 
       <div className="flex flex-row items-center justify-between">
-        <h1 className="text-display-large mb-8">Task</h1>
+        <h1 className="text-display-large mb-8">{tasks?.title}</h1>
         <div className="flex flex-row items-center gap-2">
           <IconButton href={`/tasks/${taskId}/edit`}>
             <Icon>edit</Icon>
@@ -75,35 +76,61 @@ export default function ViewTasks() {
         </div>
       </div>
 
-      <div>
-        <div className="text-headline-large">{tasks?.title}</div>
-        <div className="text-body-large text-on-surface-variant">
-          {tasks?.description}
+      <div className="ml-4">
+        <div className="text-label-large text-primary mb-4">About Task</div>
+        <div className="flex flex-row items-center justify-between">
+          <div className="max-w-[100ch]">
+            <div className="text-headline-large">{tasks?.title}</div>
+            <div className="text-body-large text-on-surface-variant">
+              {tasks?.description}
+            </div>
+          </div>
+          <div className="flex flex-col items-end">
+            <div className="text-label-small">Status</div>
+            <div className="text-title-large text-tertiary font-mono font-bold">
+              {formatStatus(tasks?.status)}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="my-8">
-        <div className="text-label-large">Project Details</div>
-        <div className="text-body-large mt-2">{tasks?.project?.name}</div>
-        <div className="text-body-medium text-on-surface-variant">
-          {tasks?.project?.description}
+      <div className="my-4">
+        <div className="text-label-large text-primary ml-4">
+          Project Details
         </div>
-        <div className="text-label-small my-4 flex flex-row items-center gap-2">
-          <span className="material-symbols-rounded text-[1rem]">schedule</span>
-          {tasks?.deadline
-            ? new Date(tasks.deadline).toLocaleDateString("en-IN", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              })
-            : "No deadline"}
+        <div className="bg-surface my-4 rounded-3xl p-4">
+          <div className="ml-6 flex flex-col">
+            <div className="text-title-large mt-2">{tasks?.project?.name}</div>
+            <div className="text-body-large text-on-surface-variant">
+              {tasks?.project?.description}
+            </div>
+          </div>
+          <div className="my-4 flex flex-row items-center gap-2">
+            <span className="material-symbols-rounded text-[1rem]">
+              schedule
+            </span>
+            <div className="flex flex-col">
+              <div className="text-label-small">Deadline</div>
+              <div className="text-body-large text-on-surface-variant">
+                {tasks?.deadline
+                  ? new Date(tasks.deadline).toLocaleDateString("en-IN", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })
+                  : "No deadline"}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="text-label-large">Assign team members</div>
+      <div className="text-label-large text-primary ml-4">
+        Assigned team members
+      </div>
       {Array.isArray(tasks?.assignedMembers) &&
         tasks.assignedMembers.length > 0 && (
           <List className="rounded-3xl">
