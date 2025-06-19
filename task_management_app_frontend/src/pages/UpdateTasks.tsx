@@ -1,4 +1,4 @@
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { FormikOutlinedTextField } from "../components/textfield/textfield";
 import { FilledButton, TextButton } from "../components/button/button";
 import api from "../api";
@@ -13,6 +13,7 @@ import type { IProject } from "../layouts/project-layout";
 import { createTasksValidationSchema } from "../schemas/tasks";
 import { FormikRadio } from "../components/radio/radio";
 import type { ITask } from "../Tasks";
+import { FormikSingleSelect } from "../components/select/select";
 
 function formatDateToLocalISO(date: Date): string {
   const pad = (num: number) => String(num).padStart(2, "0");
@@ -102,7 +103,7 @@ export default function UpdateTasks() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <h1 className="text-display-large">Update Task</h1>
+      <h1 className="text-display-large mb-8">Update Task</h1>
       <Formik
         initialValues={initialValues}
         validationSchema={createTasksValidationSchema}
@@ -111,7 +112,6 @@ export default function UpdateTasks() {
         {({ isSubmitting, errors }) => (
           <>
             <Form className="flex max-w-lg flex-col gap-4">
-              <Field name="status" type="text" />
               <FormikOutlinedTextField
                 label="Title"
                 name="title"
@@ -131,7 +131,17 @@ export default function UpdateTasks() {
                 required
                 type="datetime-local"
               />
-
+              <FormikSingleSelect
+                name="status"
+                label="Status"
+                supportingText="Select one"
+                options={[
+                  { label: "To do", value: "to-do" },
+                  { label: "In Progress", value: "in-progress" },
+                  { label: "Done", value: "done" },
+                  { label: "Cancelled", value: "cancelled" },
+                ]}
+              />
               <div className="text-label-large">Select Project</div>
               {projects?.data.length > 0 && (
                 <List className="rounded-3xl">

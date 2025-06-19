@@ -15,7 +15,7 @@ const ProjectsLayout = () => {
     queryKey: ["projects", page],
     queryFn: async () => {
       const data = await api.get("/projects", {
-        params: { page, limit: 10 },
+        params: { page, limit: 5 },
       });
       return data.data;
     },
@@ -36,7 +36,7 @@ const ProjectsLayout = () => {
     <>
       <div className="flex flex-col items-start gap-8 sm:flex-row">
         <div className="flex min-w-sm flex-col gap-4">
-          <h1 className="text-5xl">Projects</h1>
+          <h1 className="text-display-large mb-8">Projects</h1>
           <FilledButton href="/projects/create">
             <Icon slot="icon">add</Icon> Create
           </FilledButton>

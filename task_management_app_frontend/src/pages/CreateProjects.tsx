@@ -43,7 +43,7 @@ export default function CreateProjects() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <h1 className="text-display-large">Create Project</h1>
+      <h1 className="text-display-large mb-8">Create Project</h1>
       <Formik
         initialValues={initialValues}
         validationSchema={createProjectValidationSchema}

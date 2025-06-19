@@ -236,7 +236,7 @@ function Teams() {
         </Formik>
       </Dialog>
 
-      <h1 className="text-display-large">Teams</h1>
+      <h1 className="text-display-large mb-8">Teams</h1>
       <div className="flex flex-col gap-4">
         <div className="flex flex-row items-center justify-between">
           <Fab label="Add" onClick={openCreateDialog} variant="primary">
