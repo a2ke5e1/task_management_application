@@ -1,6 +1,6 @@
 import { Link, Outlet, useParams } from "react-router";
 import type { ITeam } from "../components/teams/team-card";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import api from "../api";
 import { Icon } from "../components/icon/icon";
@@ -8,6 +8,7 @@ import { FilledButton } from "../components/button/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/utils";
 import { PaginationControls } from "../components/pagination-button/pagination-button";
+import { Divider } from "../components/divider/divider";
 
 const ProjectsLayout = () => {
   const LIMIT = 5; // Number of projects per page
@@ -33,6 +34,8 @@ const ProjectsLayout = () => {
     setPage((old) => (projects?.hasMore ? old + 1 : old));
   };
 
+  const projectList: IProject[] = projects?.data || [];
+
   return (
     <>
       <div className="flex h-full flex-col items-start gap-8 md:flex-row">
@@ -43,15 +46,18 @@ const ProjectsLayout = () => {
           </FilledButton>
           <div className="bg-surface flex flex-1 flex-col overflow-auto rounded-xl">
             {status === "pending" ? "Loading..." : ""}
-            {projects?.data.map((project: IProject) => (
-              <ProjectCard
-                key={project._id}
-                _id={project._id}
-                name={project.name}
-                description={project.description}
-                createdAt={project.createdAt}
-                selected={project._id === pid}
-              />
+            {projectList.map((project: IProject, index: number) => (
+              <Fragment key={project._id}>
+                <ProjectCard
+                  key={project._id}
+                  _id={project._id}
+                  name={project.name}
+                  description={project.description}
+                  createdAt={project.createdAt}
+                  selected={project._id === pid}
+                />
+                {index < projectList.length - 1 && <Divider />}
+              </Fragment>
             ))}
           </div>
           <PaginationControls
@@ -103,7 +109,7 @@ const ProjectCard = React.forwardRef<HTMLAnchorElement, IProjectCardProps>(
         {...props}
       >
         <div className="text-headline-large line-clamp-1">{name}</div>
-        <div className="text-body-medium line-clamp-2 text-gray-800">
+        <div className="text-body-medium text-on-surface-variant line-clamp-2">
           {description}
         </div>
         <div className="text-label-medium mt-4">
