@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DashboardLayout from "./layouts/dashboard-layout";
-import Tasks from "./Tasks";
+import Tasks from "./pages/Tasks";
 import Teams from "./pages/Teams";
 import ProjectsLayout from "./layouts/project-layout";
 import Project from "./pages/Projects";

@@ -1,10 +1,10 @@
 import api from "../api";
 import { type ITeam } from "../components/teams/team-card";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { Fragment } from "react/jsx-runtime";
 import { Divider } from "../components/divider/divider";
 import { List, ListItem } from "../components/lists/list";
-import type { ITask } from "../Tasks";
+import type { ITask } from "./Tasks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IconButton } from "../components/button/button";
 import { Icon } from "../components/icon/icon";
@@ -12,6 +12,7 @@ import DeleteConfirmDialog from "../components/dialog/delete-confirm-dialog";
 import { useRef } from "react";
 import type { MdDialog } from "@material/web/dialog/dialog";
 import { formatStatus } from "../lib/utils";
+import { Ripple } from "../components/ripple/ripple";
 
 export default function ViewTasks() {
   const { taskId } = useParams<{ taskId: string }>();
@@ -98,14 +99,23 @@ export default function ViewTasks() {
         <div className="text-label-large text-primary ml-4">
           Project Details
         </div>
-        <div className="bg-surface my-4 rounded-3xl p-4">
-          <div className="ml-6 flex flex-col">
-            <div className="text-title-large mt-2">{tasks?.project?.name}</div>
-            <div className="text-body-large text-on-surface-variant">
-              {tasks?.project?.description}
+        <div className="bg-surface my-4 rounded-3xl">
+          <Link
+            to={"/projects/" + tasks?.project?._id}
+            className="relative flex flex-row items-center justify-between"
+          >
+            <Ripple />
+            <div className="p-4">
+              <div className="text-title-large mt-2">
+                {tasks?.project?.name}
+              </div>
+              <div className="text-body-large text-on-surface-variant">
+                {tasks?.project?.description}
+              </div>
             </div>
-          </div>
-          <div className="my-4 flex flex-row items-center gap-2">
+            <Icon className="mx-4">open_in_new</Icon>
+          </Link>
+          <div className="flex flex-row items-center gap-2 p-4">
             <span className="material-symbols-rounded text-[1rem]">
               schedule
             </span>

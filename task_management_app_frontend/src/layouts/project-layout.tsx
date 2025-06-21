@@ -35,13 +35,13 @@ const ProjectsLayout = () => {
 
   return (
     <>
-      <div className="flex flex-col items-start gap-8 sm:flex-row">
-        <div className="flex min-w-sm flex-col gap-4">
-          <h1 className="text-display-large mb-8">Projects</h1>
-          <FilledButton href="/projects/create">
+      <div className="flex h-full flex-col items-start gap-8 md:flex-row">
+        <div className="flex h-full w-full flex-col justify-between gap-4 md:max-w-sm">
+          <h1 className="text-display-large">Projects</h1>
+          <FilledButton href="/projects/create" className="my-4">
             <Icon slot="icon">add</Icon> Create
           </FilledButton>
-          <div className="flex flex-col overflow-auto rounded-xl">
+          <div className="bg-surface flex flex-1 flex-col overflow-auto rounded-xl">
             {status === "pending" ? "Loading..." : ""}
             {projects?.data.map((project: IProject) => (
               <ProjectCard
@@ -102,8 +102,10 @@ const ProjectCard = React.forwardRef<HTMLAnchorElement, IProjectCardProps>(
         ref={ref}
         {...props}
       >
-        <div className="text-headline-large">{name}</div>
-        <div className="text-body-medium text-gray-800">{description}</div>
+        <div className="text-headline-large line-clamp-1">{name}</div>
+        <div className="text-body-medium line-clamp-2 text-gray-800">
+          {description}
+        </div>
         <div className="text-label-medium mt-4">
           {new Date(createdAt).toLocaleDateString()}
         </div>

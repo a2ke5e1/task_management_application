@@ -12,7 +12,7 @@ import { FormikCheckbox } from "../components/checkbox/checkbox";
 import type { IProject } from "../layouts/project-layout";
 import { createTasksValidationSchema } from "../schemas/tasks";
 import { FormikRadio } from "../components/radio/radio";
-import type { ITask } from "../Tasks";
+import type { ITask } from "./Tasks";
 import { FormikSingleSelect } from "../components/select/select";
 
 function formatDateToLocalISO(date: Date): string {

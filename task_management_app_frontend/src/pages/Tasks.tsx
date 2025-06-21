@@ -1,20 +1,20 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import api from "./api";
+import api from "../api";
 import { Fragment } from "react";
-import type { IProject } from "./layouts/project-layout";
-import type { ITeam } from "./components/teams/team-card";
-import { OutlinedSelect, SelectOption } from "./components/select/select";
+import type { IProject } from "../layouts/project-layout";
+import type { ITeam } from "../components/teams/team-card";
+import { OutlinedSelect, SelectOption } from "../components/select/select";
 import type { MdOutlinedSelect } from "@material/web/select/outlined-select";
-import { OutlinedTextField } from "./components/textfield/textfield";
+import { OutlinedTextField } from "../components/textfield/textfield";
 import type { MdOutlinedTextField } from "@material/web/textfield/outlined-text-field";
-import { Icon } from "./components/icon/icon";
-import { List, ListItem } from "./components/lists/list";
-import { Divider } from "./components/divider/divider";
+import { Icon } from "../components/icon/icon";
+import { List, ListItem } from "../components/lists/list";
+import { Divider } from "../components/divider/divider";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { PaginationControls } from "./components/pagination-button/pagination-button";
-import { FilledButton, TextButton } from "./components/button/button";
-import { Fab } from "./components/fab/fab";
-import { formatStatus } from "./lib/utils";
+import { PaginationControls } from "../components/pagination-button/pagination-button";
+import { FilledButton, TextButton } from "../components/button/button";
+import { Fab } from "../components/fab/fab";
+import { formatStatus } from "../lib/utils";
 
 function Tasks() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -96,7 +96,7 @@ function Tasks() {
       </Fab>
 
       {/* Filters */}
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between gap-4">
         <div className="flex flex-wrap gap-4">
           <OutlinedTextField
             className="h-[3.5rem]"
@@ -166,7 +166,7 @@ function Tasks() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap justify-end gap-4">
           <div className="relative flex flex-col gap-2">
             <div className="bg-surface-container-lowest focus:text-primary absolute -top-2 left-2 px-2 text-[0.75rem]">
               From

@@ -110,7 +110,7 @@ function Projects() {
 
       <div className="flex flex-row items-center justify-between">
         <h1 className="text-display-large"></h1>
-        <div className="flex flex-row items-center justify-between gap-4">
+        <div className="flex flex-row items-center justify-between gap-4 py-3">
           <IconButton onClick={() => navigate(`/projects/${pid}/edit`)}>
             <Icon>edit</Icon>
           </IconButton>
@@ -124,7 +124,7 @@ function Projects() {
       ) : status === "error" ? (
         <p>Error loading project details.</p>
       ) : (
-        <div className="mt-4">
+        <div className="mt-22">
           <h1 className="text-label-large text-primary mb-4">
             Project Details
           </h1>
