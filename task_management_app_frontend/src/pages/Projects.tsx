@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useOutletContext, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api";
 import type { ITeam } from "../components/teams/team-card";
@@ -6,14 +6,41 @@ import type { IProject } from "../layouts/project-layout";
 import { IconButton, TextButton } from "../components/button/button";
 import { Icon } from "../components/icon/icon";
 import type { MdDialog } from "@material/web/dialog/dialog";
-import { Fragment, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { Dialog } from "../components/dialog/dialog";
 import { Field, Form, Formik, type FormikHelpers } from "formik";
 import { List, ListItem } from "../components/lists/list";
 import { Divider } from "../components/divider/divider";
 
+type ContextType = {
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  LIMIT: number;
+};
+
 function Projects() {
   const { pid } = useParams<{ pid: string }>();
+  const { setPage, LIMIT } = useOutletContext<ContextType>();
+
+  // Fetch page number for the project list
+  // This is used to determine the current page of the project list
+  // when navigating to a specific project
+  // It helps in maintaining the pagination state when returning to the project list
+  const { status: pageDataStatus, data: pageData } = useQuery({
+    queryKey: ["projects", "find-page", pid],
+    queryFn: async (): Promise<{
+      page: number;
+    }> => {
+      const res = await api.get(`/projects/find-page/${pid}`, {
+        params: { limit: LIMIT },
+      });
+      if (res.status !== 200) {
+        return {
+          page: 1,
+        };
+      }
+      return res.data.data;
+    },
+  });
 
   const { status, data: project } = useQuery({
     queryKey: ["projects", pid],
@@ -71,6 +98,15 @@ function Projects() {
       setSubmitting(false);
     }
   };
+
+  // Set the page number in the parent component when the project data is successfully fetched
+  // This is useful for maintaining the pagination state when navigating back to the project list
+  // It ensures that the page number is set to the correct value based on the project being viewed
+  useEffect(() => {
+    if (pageDataStatus === "success" && pageData?.page) {
+      setPage(pageData.page);
+    }
+  }, [pageDataStatus, pageData, setPage]);
 
   return (
     <>

@@ -7,6 +7,8 @@ import {
   DeleteProjectInput,
   deleteProjectSchema,
   getAllProjectSchema,
+  getPageNumberSchema,
+  GetProjectPageNumberInput,
   getProjectSchema,
   ReadAllProjectInput,
   ReadProjectInput,
@@ -116,6 +118,45 @@ projectsRouter.delete(
       const { projectId } = req.params;
       await Projects.findOneAndDelete({ _id: projectId });
       res.status(204).json({ msg: "Deleted successfully" });
+    } catch (e: any) {
+      console.warn(e);
+      res.status(500).json({ msg: "Internal server error" });
+    }
+  }
+);
+
+// api to get page number of a project
+// this a helper api to find the page number of a project
+projectsRouter.get(
+  "/find-page/:projectId",
+  validateResource(getPageNumberSchema),
+  async (
+    req: Request<
+      GetProjectPageNumberInput["params"],
+      {},
+      {},
+      Partial<Record<keyof GetProjectPageNumberInput["query"], string>>
+    >,
+    res: Response
+  ) => {
+    try {
+      const limit = Number(req.query.limit);
+      const { projectId } = req.params;
+      // Get the project document
+      const project = await Projects.findById(projectId).lean();
+      if (!project) {
+        res.status(404).json({ msg: "Project not found" });
+        return;
+      }
+
+      // Count how many projects were created *before* this one, using same sort order
+      const index = await Projects.countDocuments({
+        createdAt: { $lt: project.createdAt },
+      });
+
+      const page = Math.floor(index / limit) + 1;
+
+      res.json({ data: { page } });
     } catch (e: any) {
       console.warn(e);
       res.status(500).json({ msg: "Internal server error" });

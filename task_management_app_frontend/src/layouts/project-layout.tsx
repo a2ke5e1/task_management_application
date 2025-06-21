@@ -10,13 +10,15 @@ import { cn } from "../lib/utils";
 import { PaginationControls } from "../components/pagination-button/pagination-button";
 
 const ProjectsLayout = () => {
+  const LIMIT = 5; // Number of projects per page
   const [page, setPage] = useState(1);
+  const { pid } = useParams<{ pid: string }>();
 
   const { status, data: projects } = useQuery({
     queryKey: ["projects", page],
     queryFn: async () => {
       const data = await api.get("/projects", {
-        params: { page, limit: 5 },
+        params: { page, limit: LIMIT },
       });
       return data.data;
     },
@@ -30,8 +32,6 @@ const ProjectsLayout = () => {
   const handleNextButton = () => {
     setPage((old) => (projects?.hasMore ? old + 1 : old));
   };
-
-  const { pid } = useParams<{ pid: string }>();
 
   return (
     <>
@@ -63,7 +63,7 @@ const ProjectsLayout = () => {
           />
         </div>
         <div className="flex w-full flex-col gap-4">
-          <Outlet />
+          <Outlet context={{ setPage, LIMIT }} />
         </div>
       </div>
     </>

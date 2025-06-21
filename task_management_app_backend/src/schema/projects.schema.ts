@@ -71,9 +71,17 @@ export const getAllProjectSchema = z.object({
     ),
 });
 
+export const getPageNumberSchema = z.object({
+  query: z.object({
+    limit: z.coerce.number().min(1, { message: "Limit can't be less than 1" }),
+  }),
+  params: params.params,
+});
+
 // Type extraction
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 export type UpdateProjectInput = z.infer<typeof updateProjectSchema>;
 export type ReadProjectInput = z.infer<typeof getProjectSchema>;
 export type ReadAllProjectInput = z.infer<typeof getAllProjectSchema>;
 export type DeleteProjectInput = z.infer<typeof deleteProjectSchema>;
+export type GetProjectPageNumberInput = z.infer<typeof getPageNumberSchema>;
