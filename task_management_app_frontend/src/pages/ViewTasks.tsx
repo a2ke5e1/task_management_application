@@ -79,7 +79,7 @@ export default function ViewTasks() {
 
       <div className="ml-4">
         <div className="text-label-large text-primary mb-4">About Task</div>
-        <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-row justify-between">
           <div className="max-w-[100ch]">
             <div className="text-headline-large">{tasks?.title}</div>
             <div className="text-body-large text-on-surface-variant">
@@ -99,7 +99,7 @@ export default function ViewTasks() {
         <div className="text-label-large text-primary ml-4">
           Project Details
         </div>
-        <div className="bg-surface my-4 rounded-3xl">
+        <div className="bg-surface rounded-3xl py-4">
           <Link
             to={"/projects/" + tasks?.project?._id}
             className="relative flex flex-row items-center justify-between"
