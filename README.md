@@ -9,7 +9,7 @@ A full-stack task management application with a React + TypeScript + Vite + Mate
 ### 1. Clone the Repository
 
 ```sh
-git clone <repo-url>
+git clone https://github.com/a2ke5e1/task_management_application.git
 cd task_management_application
 ```
 
